@@ -1,0 +1,124 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<pages:PopupPage
+    x:Class="CryptOverseeMobileApp.Pages.MyPopupPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:animations="clr-namespace:Rg.Plugins.Popup.Animations;assembly=Rg.Plugins.Popup"
+    xmlns:microcharts="clr-namespace:Microcharts.Forms;assembly=Microcharts.Forms"
+    xmlns:oxy="clr-namespace:OxyPlot.Xamarin.Forms;assembly=OxyPlot.Xamarin.Forms"
+
+    xmlns:pages="clr-namespace:Rg.Plugins.Popup.Pages;assembly=Rg.Plugins.Popup"
+    xmlns:viewModels="clr-namespace:CryptOverseeMobileApp.ViewModels;assembly=CryptOverseeMobileApp" 
+>
+
+    <!--You can set an animation in the xaml file or in the csharp code behind-->
+    <pages:PopupPage.Animation>
+        <animations:ScaleAnimation 
+            PositionIn="Center"
+            PositionOut="Center"
+            ScaleIn="1.2"
+            ScaleOut="0.8"
+            DurationIn="300"
+            DurationOut="200"
+            EasingIn="SinOut"
+            EasingOut="SinIn"
+            HasBackgroundAnimation="False"/>
+    </pages:PopupPage.Animation>
+
+    <StackLayout VerticalOptions="Center" HorizontalOptions="Center" Padding="0" Margin="0" x:DataType="viewModels:MyPopupPageViewModel"  >
+        <Frame  Padding="15" CornerRadius="25" BorderColor="DarkSlateGray">
+
+            <StackLayout >
+
+                <!--<microcharts:ChartView x:Name="chartView" Chart="{Binding Chart}" />-->
+
+                <oxy:PlotView Model="{Binding Model3}" VerticalOptions="StartAndExpand" HorizontalOptions="Center" HeightRequest="250"/>
+
+
+
+
+                <Label Text="{Binding Symbol}" TextColor="Silver" FontSize="Large" HorizontalOptions="Center" />
+
+                <StackLayout Orientation="Vertical">
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="Spd higher than" TextColor="Silver" FontSize="Small" />
+                        <Label Text="{Binding MinAverageSpread, StringFormat='{0:F1} % '}" TextColor="Gray" FontSize="Small" />
+                        <Label Text="about" TextColor="Silver" FontSize="Small" />
+                        <Label Text="{Binding HistSpread.SpreadOccurence, StringFormat='{0:F0} %'}" TextColor="Gray" FontSize="Small" />
+                        <Label Text="of the time" TextColor="Silver" FontSize="Small" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="Nber data points" TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding HistSpread.NbDataPoints}" TextColor="Gray" FontSize="Small"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="Nber blanks" TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding HistSpread.NbBlanks}" TextColor="Gray" FontSize="Small"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="Data collected" TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding HistSpread.NbDaysDataWasCollectedPercentage, StringFormat='{0:F0} %'}" TextColor="Gray" FontSize="Small"/>
+                        <Label Text="{Binding HistSpread.NbDaysDataWasCollected, StringFormat='of days (over{0:F0} days)'}" TextColor="Silver" FontSize="Small"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="Spread" TextColor="Silver" FontSize="Small"/>
+                        <Label Text="Avg." TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding HistSpread.AverageSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>
+                        <!--<Label Text="Min." TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding HistSpread.MinSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>-->
+                        <Label Text="Max." TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding HistSpread.MaxSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>
+                    </StackLayout>
+                </StackLayout>
+
+
+
+            </StackLayout> 
+
+        </Frame>
+    </StackLayout>
+
+    <!--<StackLayout Background="White" cor x:DataType="viewModels:MyPopupPageViewModel"
+        VerticalOptions="Center" 
+        HorizontalOptions="Center"
+        Padding="20, 20, 20, 20">
+
+        <Label Text="{Binding Symbol}" TextColor="Silver" FontSize="Large" />
+
+        <StackLayout Orientation="Vertical">
+            <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                <Label Text="Spd higher than" TextColor="Silver" FontSize="Small" />
+                <Label Text="{Binding MinAverageSpread, StringFormat='{0:F1} % '}" TextColor="Gray" FontSize="Small" />
+                <Label Text="about" TextColor="Silver" FontSize="Small" />
+                <Label Text="{Binding HistSpread.SpreadOccurence, StringFormat='{0:F0} %'}" TextColor="Gray" FontSize="Small" />
+                <Label Text="of the time" TextColor="Silver" FontSize="Small" />
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                <Label Text="Nber data points" TextColor="Silver" FontSize="Small"/>
+                <Label Text="{Binding HistSpread.NbDataPoints}" TextColor="Gray" FontSize="Small"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                <Label Text="Nber blanks" TextColor="Silver" FontSize="Small"/>
+                <Label Text="{Binding HistSpread.NbBlanks}" TextColor="Gray" FontSize="Small"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                <Label Text="Data collected" TextColor="Silver" FontSize="Small"/>
+                <Label Text="{Binding HistSpread.NbDaysDataWasCollectedPercentage, StringFormat='{0:F0} %'}" TextColor="Gray" FontSize="Small"/>
+                <Label Text="{Binding HistSpread.NbDaysDataWasCollected, StringFormat='of days (over{0:F0} days='}" TextColor="Silver" FontSize="Small"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                <Label Text="Spread" TextColor="Silver" FontSize="Small"/>
+                <Label Text="Avg." TextColor="Silver" FontSize="Small"/>
+                <Label Text="{Binding HistSpread.AverageSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>
+                <Label Text="Min." TextColor="Silver" FontSize="Small"/>
+                <Label Text="{Binding HistSpread.MinSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>
+                <Label Text="Max." TextColor="Silver" FontSize="Small"/>
+                <Label Text="{Binding HistSpread.MaxSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>
+            </StackLayout>
+        </StackLayout>
+
+
+
+    </StackLayout>-->
+
+</pages:PopupPage>

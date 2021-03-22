@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CryptOverseeMobileApp.ViewModels;assembly=CryptOverseeMobileApp"
+             xmlns:b="clr-namespace:Xamarin.Forms.BehaviorsPack;assembly=Xamarin.Forms.BehaviorsPack"
+             xmlns:settings="clr-namespace:CryptOverseeMobileApp.ViewModels.Settings;assembly=CryptOverseeMobileApp"
+             x:Class="CryptOverseeMobileApp.Pages.ObjectSelectorThreeColView">
+
+    <ContentView.BindingContext>
+        <settings:ObjectSelectorViewModel/>
+    </ContentView.BindingContext>
+
+    <ContentView.Content>
+        <StackLayout>
+            <CollectionView ItemsSource="{Binding Values.Value}" SelectionMode="None" ItemsUpdatingScrollMode="KeepLastItemInView" VerticalOptions="Start"
+                            ItemsLayout="VerticalGrid, 3" Margin="10,0,10,0">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Orientation="Horizontal"  Padding="10,0,10,0" >
+                            <Label  Text="{Binding Name}" TextColor="Gray" FontSize="Default" HorizontalOptions="Start" VerticalOptions="Center"/>
+                            <Switch IsToggled="{Binding Enabled, Mode=TwoWay}" Scale="1.2" ThumbColor="DodgerBlue" OnColor="LightBlue" 
+                                    HorizontalOptions="EndAndExpand" VerticalOptions="Center">
+                                <Switch.Behaviors>
+                                    <b:EventToCommandBehavior EventName="Toggled"  Command="{Binding SavePreferencesCommand}"/>
+                                </Switch.Behaviors>
+                            </Switch>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>

@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CryptOverseeMobileApp.ViewModels;assembly=CryptOverseeMobileApp"
+             xmlns:views="clr-namespace:CryptOverseeMobileApp.Pages;assembly=CryptOverseeMobileApp"
+             xmlns:settings="clr-namespace:CryptOverseeMobileApp.ViewModels.Settings;assembly=CryptOverseeMobileApp"
+             x:Class="CryptOverseeMobileApp.Pages.SettingsContentPage"
+             NavigationPage.HasNavigationBar="true">
+
+    <ContentPage.BindingContext>
+        <settings:BitcoinSettingsViewModel/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+
+            <StackLayout >
+                <Button Text="✖️" FontSize="Large" HorizontalOptions="EndAndExpand" Margin="0,0,0,0" Padding="0" 
+                        BackgroundColor="Transparent" Clicked="OnDismissButtonClicked" />
+
+                <Label Text="Filter out low spreads" FontSize="Medium" HorizontalOptions="Center" />
+                <StackLayout Orientation="Horizontal" HorizontalOptions="Center">
+                    <Label Text="{Binding MinSpreadRounded.Value, StringFormat='Don\'t show spreads with value lower than {0:F2} %'}"  FontSize="Default" HorizontalOptions="Center"/>
+                </StackLayout>
+
+                <StackLayout Margin="10" >
+                    <Slider Minimum="0" Maximum="0.5" ThumbColor="DodgerBlue" BackgroundColor="Transparent" Scale="1.5" HorizontalOptions="Center" 
+                            WidthRequest="200" HeightRequest="40"
+                            MaximumTrackColor="LightGray" MinimumTrackColor="DodgerBlue" Value="{Binding MinSpread.Value, Mode=TwoWay}" />
+                </StackLayout>
+
+                <!-- Separator -->
+                <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End" Margin="0,0,0,10"/>
+
+                <Label Text="Set Exchanges preferences" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" />
+
+            <views:ObjectSelectorTwoColView BindingContext="{Binding ExchangesVM}"/>
+                
+                <!-- Separator -->
+                <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End" Margin="0,0,0,10"/>
+
+                <Label Text="Set Markets preferences" FontSize="Medium" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" />
+
+
+
+            <views:ObjectSelectorThreeColView BindingContext="{Binding MarketsVM}"/>
+
+
+                <StackLayout.GestureRecognizers>
+                    <!--<TapGestureRecognizer Tapped="ExpandTapped" />-->
+                    <SwipeGestureRecognizer Direction="Down" Swiped="OnDismissButtonClicked"/>
+                </StackLayout.GestureRecognizers>
+        </StackLayout>
+
+    </ContentPage.Content>
+</ContentPage>

@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:dg="clr-namespace:Xamarin.Forms.DataGrid;assembly=Xamarin.Forms.DataGrid" 
+             xmlns:viewModels="clr-namespace:CryptOverseeMobileApp.ViewModels;assembly=CryptOverseeMobileApp"
+             x:Class="CryptOverseeMobileApp.Pages.LiveSpread"
+             >
+
+    <ContentPage.BindingContext>
+        <viewModels:LiveSpreadViewModel/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Content>
+        <StackLayout Margin="20,35,20,20">
+            <Button Text="Get Spread Data for HNT/USDT 2" Command="{Binding ButtonSelectedCommand}" />
+            <Button Text="Clear test" Command="{Binding ButtonClearSelectedCommand}" />
+            <Label Text="{Binding SomeText}" TextColor="Silver" FontSize="Small" />
+
+            <!--<StackLayout Orientation="Horizontal">
+                <Label Text="Buy on" TextColor="Silver" FontSize="Small" />
+                <Label Text="BinanceUS" FontSize="Medium" />
+                <Label Text=" Sell on" TextColor="Silver" FontSize="Small" />
+                <Label Text="Binance" FontSize="Medium" />
+            </StackLayout>-->
+
+            <CollectionView ItemsSource="{Binding Spreads}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout>
+                        <Label Text="{Binding Date}" TextColor="Silver" FontSize="Small" Margin="0,7,0,0"/>
+                        <StackLayout Orientation="Horizontal" Margin="0,-8,0,0">
+                            <Label Text="Spread:" TextColor="Gray" FontSize="Caption" />
+                            <Label Text="{Binding SpreadValue}" TextColor="Gray" FontSize="Caption" />
+                            <Label Text=" %  Volume:" TextColor="Gray" FontSize="Caption" />
+                            <Label Text="{Binding VolumeInQuoteCcy}" TextColor="Gray" FontSize="Caption" />
+                            <Label Text=" USDT" TextColor="Gray" FontSize="Caption" />
+                        </StackLayout>
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+            <!--<dg:DataGrid ItemsSource="{Binding Spreads}" 
+                     SelectedItem="{Binding SelectedSpread}"
+                     RowHeight="25" HeaderHeight="40"  
+                     BorderColor="#CCCCCC" HeaderBackground="#E0E6F8" 
+                     PullToRefreshCommand="{Binding RefreshCommand}" IsRefreshing="{Binding IsRefreshing}"
+                     ActiveRowColor="#8899AA">
+                <x:Arguments>
+                    <ListViewCachingStrategy>RetainElement</ListViewCachingStrategy>
+                </x:Arguments>
+                <dg:DataGrid.HeaderFontSize>
+                    <OnIdiom x:TypeArguments="x:Double">
+                        <OnIdiom.Tablet>15</OnIdiom.Tablet>
+                        <OnIdiom.Phone>12</OnIdiom.Phone>
+                    </OnIdiom>
+                </dg:DataGrid.HeaderFontSize>
+                <dg:DataGrid.Columns>
+
+                    <dg:DataGridColumn PropertyName="Date" Width="2*" >
+                        <dg:DataGridColumn.FormattedTitle>
+                            <FormattedString>
+                                <Span Text="Date" FontSize="13" TextColor="Black" FontAttributes="None"  />
+                            </FormattedString>
+                        </dg:DataGridColumn.FormattedTitle>
+                    </dg:DataGridColumn>
+                    --><!--<dg:DataGridColumn Title="Date" PropertyName="Date" Width="1*"></dg:DataGridColumn>-->
+
+                    <!--<dg:DataGridColumn Title="Date" PropertyName="." Width="2*">
+                    <dg:DataGridColumn.CellTemplate>
+                        <DataTemplate>
+                            <Label Margin="-10,0,0,0" FontSize="Small" Text="{Binding .Date, StringFormat='{0:HH:mm}'}"  HorizontalTextAlignment="End" />
+                        </DataTemplate>
+                    </dg:DataGridColumn.CellTemplate>
+                </dg:DataGridColumn>--><!--
+
+                    <dg:DataGridColumn Title="Spread" PropertyName="SpreadValue" Width="1*"></dg:DataGridColumn>
+                    <dg:DataGridColumn Title="Volume" PropertyName="VolumeInQuoteCcy" Width="1*"></dg:DataGridColumn>
+
+
+                </dg:DataGrid.Columns>
+                <dg:DataGrid.RowsBackgroundColorPalette>
+                    <dg:PaletteCollection>
+                        <Color>#F2F2F2</Color>
+                        <Color>#FFFFFF</Color>
+                    </dg:PaletteCollection>
+                </dg:DataGrid.RowsBackgroundColorPalette>
+            </dg:DataGrid>-->
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

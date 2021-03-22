@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:mypages="clr-namespace:CryptOverseeMobileApp.Pages;assembly=CryptOverseeMobileApp"
+             xmlns:android="clr-namespace:Xamarin.Forms.PlatformConfiguration.AndroidSpecific;assembly=Xamarin.Forms.Core"
+             x:Class="CryptOverseeMobileApp.TabbedPage1"
+             android:TabbedPage.ToolbarPlacement="Bottom"
+            >
+
+    <!--Pages can be added as references or inline-->
+  <TabbedPage.Children>
+        <NavigationPage Title="Bitcoin" IconImageSource="{OnPlatform iOS=android.svg, Android=scale.png}" >
+            <x:Arguments>
+                <mypages:LiveSpreadsBitcoin />
+            </x:Arguments>
+        </NavigationPage>
+
+        <!--<mypages:LiveSpread Title="Live Spreads HNT" IconImageSource="{OnPlatform iOS=android.svg, Android=network.png}"/>-->
+        <mypages:HistoricalSpreads Title="Historical Spreads" IconImageSource="{OnPlatform iOS=android.svg, Android=network.png}"/>
+
+<!--<ContentPage Title="Tab abc" />-->
+
+  </TabbedPage.Children>
+
+</TabbedPage>
