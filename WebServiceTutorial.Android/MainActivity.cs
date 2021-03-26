@@ -20,6 +20,10 @@ namespace CryptOverseeMobileApp.Droid
 
             Rg.Plugins.Popup.Popup.Init(this); // https://github.com/rotorgames/Rg.Plugins.Popup/wiki/Getting-started
 
+            // Remove the status bar and icons from top of screen
+            Window?.AddFlags(WindowManagerFlags.Fullscreen);
+            Window?.ClearFlags(WindowManagerFlags.ForceNotFullscreen);
+
             Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Android: OxyPlot.Xamarin.Forms.Platform.Android.PlotViewRenderer.Init();
 
