@@ -60,6 +60,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Reference Include="ChocoExchangesApi">
+      <HintPath>Resources\ChocoExchangesApi.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Pages\MyPopupPage.xaml.cs">
       <DependentUpon>MyPopupPage.xaml</DependentUpon>
     </Compile>

@@ -95,7 +95,7 @@ namespace CryptOverseeMobileApp.ViewModels
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                throw ex;
+                //throw ex;
             }
 
 
@@ -189,11 +189,11 @@ namespace CryptOverseeMobileApp.ViewModels
         {
             Task.Factory.StartNew(async () =>
             {
-                while (true)
-                {
-                    UpdateBitcoinSpreadsOnce();
-                    await Task.Delay(new TimeSpan(0, 0, 10));
-                }
+                //while (true)
+                //{
+                //    UpdateBitcoinSpreadsOnce();
+                //    await Task.Delay(new TimeSpan(0, 0, 10));
+                //}
             });
 
         }

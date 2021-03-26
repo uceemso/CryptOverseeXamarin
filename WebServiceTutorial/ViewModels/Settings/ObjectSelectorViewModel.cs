@@ -8,6 +8,20 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
     {
         public ObjectSelectorViewModel()
         {
+            //Values = new ReactiveProperty<ObservableCollection<SettingItemViewModel>>(new ObservableCollection<SettingItemViewModel>()
+            //{
+            //    new SettingItemViewModel("HIST_EXCHANGES", "Binance"),
+            //    new SettingItemViewModel("HIST_EXCHANGES", "HitBTC"),
+            //    new SettingItemViewModel("HIST_EXCHANGES", "HitBTC"),
+            //    new SettingItemViewModel("HIST_EXCHANGES", "HitBTC"),
+            //    new SettingItemViewModel("HIST_EXCHANGES", "HitBTC"),
+            //    new SettingItemViewModel("HIST_EXCHANGES", "HitBTC"),
+            //    new SettingItemViewModel("HIST_EXCHANGES", "HitBTC"),
+            //    new SettingItemViewModel("HIST_EXCHANGES", "HitBTC"),
+            //    new SettingItemViewModel("HIST_EXCHANGES", "HitBTC"),
+            //    new SettingItemViewModel("HIST_EXCHANGES", "HitBTC"),
+            //    new SettingItemViewModel("HIST_EXCHANGES", "HitBTC"),
+            //});
             Values = new ReactiveProperty<ObservableCollection<SettingItemViewModel>>(new ObservableCollection<SettingItemViewModel>());
 
         }

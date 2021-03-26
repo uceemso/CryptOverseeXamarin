@@ -32,9 +32,10 @@ namespace CryptOverseeMobileApp
             }
         }
 
-        public async Task<List<HistoricalSpreadModel>> GetHistoricalSpreadsAsync()
+        public async Task<List<HistoricalSpreadModel>> GetHistoricalSpreadsAsync(int nberHours)
         {
-            var content = await GetResponse(Constants.HistoricalSpreadEndpoint);
+            var url = Constants.HistoricalSpreadEndpoint + nberHours;
+            var content = await GetResponse(url);
             try
             {
                 return JsonConvert.DeserializeObject<List<HistoricalSpreadModel>>(content);

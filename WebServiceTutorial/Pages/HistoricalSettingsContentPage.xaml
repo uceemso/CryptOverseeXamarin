@@ -4,16 +4,25 @@
              xmlns:viewModels="clr-namespace:CryptOverseeMobileApp.ViewModels;assembly=CryptOverseeMobileApp"
              xmlns:views="clr-namespace:CryptOverseeMobileApp.Pages;assembly=CryptOverseeMobileApp"
              xmlns:settings="clr-namespace:CryptOverseeMobileApp.ViewModels.Settings;assembly=CryptOverseeMobileApp"
+             xmlns:b="clr-namespace:Xamarin.Forms.BehaviorsPack;assembly=Xamarin.Forms.BehaviorsPack"
+             xmlns:converters="clr-namespace:CryptOverseeMobileApp.Converters;assembly=CryptOverseeMobileApp"
+
              x:Class="CryptOverseeMobileApp.Pages.HistoricalSettingsContentPage"
-             NavigationPage.HasNavigationBar="true">
+             NavigationPage.HasNavigationBar="true"
+             x:Name="HistoricalSettingsName">
 
     <ContentPage.BindingContext>
         <settings:HistoricalSettingsViewModel/>
     </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ContentPage.Content>
 
-        <StackLayout Margin="20,10,20,20">
+        <StackLayout Margin="10,10,20,20">
 
             <StackLayout Orientation="Horizontal" >
                 <Label Margin="0,0,0,0" Text="Settings" TextColor="Black" FontSize="Title"  />
@@ -34,27 +43,60 @@
                 <Label Text="{Binding MinOccurence.Value, StringFormat='{0:F2} %'}" TextColor="Gray" FontAttributes="Bold" />
                 <Label Text="of the time" TextColor="Gray" FontSize="Default" />
             </StackLayout>
-            <Slider Minimum="0" Maximum="50" ThumbColor="DodgerBlue" BackgroundColor="Transparent" Scale="1.5" HorizontalOptions="Center" 
+            <Slider Minimum="0" Maximum="25" ThumbColor="DodgerBlue" BackgroundColor="Transparent" Scale="1.5" HorizontalOptions="Center" 
                     WidthRequest="200" HeightRequest="40"
                     MaximumTrackColor="LightGray" MinimumTrackColor="DodgerBlue" Value="{Binding MinOccurence.Value, Mode=TwoWay}" />
             <StackLayout Orientation="Horizontal">
                 <Label Text="Only use data recorded over the last" TextColor="Gray" FontSize="Default" />
-                <Label Text="{Binding NumberDays.Value, StringFormat='{0:F0}'}" TextColor="Gray" FontAttributes="Bold" />
-                <Label Text="days" TextColor="Gray" FontSize="Default" />
             </StackLayout>
+            <FlexLayout Wrap="Wrap" RadioButtonGroup.GroupName="durations" RadioButtonGroup.SelectedValue="{Binding NumberHours.Value}" >
+                <RadioButton Content="1hr" Value="1" IsChecked="{Binding DurationIsChecked1.Value}" />
+                <RadioButton Content="24hrs" Value="24" IsChecked="{Binding DurationIsChecked24.Value}" />
+                <RadioButton Content="48hrs" Value="48" IsChecked="{Binding DurationIsChecked48.Value}" />
+                <RadioButton Content="3 days" Value="72" IsChecked="{Binding DurationIsChecked72.Value}" />
+                <RadioButton Content="7 days" Value="168" IsChecked="{Binding DurationIsChecked168.Value}"/>
+            </FlexLayout>
 
 
             <!-- Separator -->
                 <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End" Margin="0,0,0,10"/>
 
                 <Label Text="Set Exchanges preferences" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" />
-                <views:ObjectSelectorTwoColView BindingContext="{Binding ExchangesVM}"/>
-                
-                <!-- Separator -->
+
+            <StackLayout >
+                <FlexLayout BindableLayout.ItemsSource="{Binding ExchangesVM.Values.Value}"  Wrap="Wrap" >
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="2" HeightRequest="30" >
+                                <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DodgerBlue" BorderColor="Transparent"  VerticalOptions="Start"
+                                       IsVisible="{Binding Enabled}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference HistoricalSettingsName}}"
+                                                              CommandParameter="{Binding}" NumberOfTapsRequired="1" />
+                                    </Frame.GestureRecognizers>
+                                    <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>
+                                </Frame>
+                                <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DarkGray" BorderColor="Transparent" VerticalOptions="Start"
+                                       IsVisible="{Binding Enabled, Converter={StaticResource InverseBoolConverter}}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference HistoricalSettingsName}}"
+                                                              CommandParameter="{Binding}" NumberOfTapsRequired="1" />
+                                    </Frame.GestureRecognizers>
+                                    <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+            </StackLayout>
+            
+                <!--<views:ObjectSelectorTwoColView BindingContext="{Binding ExchangesVM}"/>-->
+
+            <!-- Separator -->
                 <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End" Margin="0,0,0,10"/>
 
-                <Label Text="Set Markets preferences" FontSize="Medium" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" />
-                <views:ObjectSelectorThreeColView BindingContext="{Binding MarketsVM}"/>
+                <!--<Label Text="Set Markets preferences" FontSize="Medium" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" />
+                <views:ObjectSelectorThreeColView BindingContext="{Binding MarketsVM}"/>-->
 
                 <StackLayout.GestureRecognizers>
                     <SwipeGestureRecognizer Direction="Down" Swiped="OnDismissButtonClicked"/>

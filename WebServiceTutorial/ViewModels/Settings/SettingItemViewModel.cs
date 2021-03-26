@@ -47,6 +47,14 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             Console.WriteLine($"Saved preference to {Enabled} for key {Key}");
         }
 
+        public void Toggle()
+        {
+            if (!AllowedToSavePreference) return;
+            Enabled = !Enabled;
+            Preferences.Set(Key, Enabled.ToString());
+            Console.WriteLine($"Saved preference to {Enabled} for key {Key}");
+        }
+
         public override string ToString()
         {
             return $"{Name} Enabled: {Enabled}, {PageName}";

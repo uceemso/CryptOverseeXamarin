@@ -51,6 +51,10 @@ namespace CryptOverseeMobileApp.Models
         public double MaxSpreadValue { get; set; }
 
         public double SpreadOccurence { get; set; }
+        public string BaseCurrency => Symbol.Split('/').First();
+        public string QuoteCurrency => Symbol.Split('/').Last();
+
+
         public double GetSpreadOccurence(double minSpread)
         {
             var count = Spreads.Count(_ => _ > minSpread);
