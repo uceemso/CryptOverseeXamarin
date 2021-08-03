@@ -65,7 +65,7 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             {
                 var filteredSpreads = spreads.
                     Where(_ => _.GetSpreadOccurence(MinAverageSpread.Value) >= MinOccurence.Value &&
-                               ShouldDisplayExchange(ExchangesVM.GetValues(), _.SellOn) && ShouldDisplayExchange(ExchangesVM.GetValues(), _.BuyOn)
+                               SettingsHelper.ShouldDisplayBasedOnExchangeSettings(ExchangesVM.GetValues(), _.SellOn, _.BuyOn)
                         // && ShouldDisplayMarket(_.Symbol)
                     );
 
@@ -75,8 +75,6 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             {
                 return null;
             }
-            
-
         }
 
         public ICommand SelectedPictureChangedCommand

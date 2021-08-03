@@ -7,10 +7,10 @@ using Xamarin.Forms.Xaml;
 namespace CryptOverseeMobileApp.Pages
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MyPopupPage : Rg.Plugins.Popup.Pages.PopupPage
+    public partial class MyPopupPageLiveSpread : Rg.Plugins.Popup.Pages.PopupPage
     {
-        private MyPopupPageViewModel _viewModel;
-        public MyPopupPage(MyPopupPageViewModel viewModel)
+        private MyPopupPageLiveSpreadViewModel _viewModel;
+        public MyPopupPageLiveSpread(MyPopupPageLiveSpreadViewModel viewModel)
         {
             InitializeComponent();
             _viewModel = viewModel;
@@ -27,7 +27,7 @@ namespace CryptOverseeMobileApp.Pages
         {
             base.OnDisappearing();
             _viewModel.IsOn = false;
-            _viewModel.CancelTask();
+            _viewModel.Dispose();
 
         }
 

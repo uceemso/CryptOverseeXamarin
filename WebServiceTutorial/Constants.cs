@@ -7,5 +7,7 @@
         public const string HistoricalSpreadEndpoint = "https://cryptoverseeserver.azurewebsites.net/spread/spreadanalyserallexchanges/";
 
         public const string GetPhotoVotesEndpoint = "https://cryptoverseeserver.azurewebsites.net/spread/getPhotoVotes";
+        public const string GetRecentSpreads = "https://cryptoverseeserver.azurewebsites.net/spread/getRecentSpreads";
+        public const string GetRecentSpreads2 = "https://cryptoverseeserver.azurewebsites.net/spread/getRecentSpreads2";
     }
 }

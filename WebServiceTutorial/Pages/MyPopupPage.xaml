@@ -30,6 +30,8 @@
 
             <StackLayout >
 
+                <Label Text="{Binding Symbol}" TextColor="Black" FontSize="Large" HorizontalOptions="Center" />
+
                 <!--<microcharts:ChartView x:Name="chartView" Chart="{Binding Chart}" />-->
 
                 <oxy:PlotView Model="{Binding Model3}" VerticalOptions="StartAndExpand" HorizontalOptions="Center" HeightRequest="250"/>
@@ -37,7 +39,7 @@
 
 
 
-                <Label Text="{Binding Symbol}" TextColor="Silver" FontSize="Large" HorizontalOptions="Center" />
+
 
                 <StackLayout Orientation="Vertical">
                     <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
@@ -68,6 +70,21 @@
                         <Label Text="{Binding HistSpread.MinSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>-->
                         <Label Text="Max." TextColor="Silver" FontSize="Small"/>
                         <Label Text="{Binding HistSpread.MaxSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="Live prices:" TextColor="Silver" FontSize="Small"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="BuyOnASellOnB" TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding Spread.Value.SpreadBuyOnASellOnB, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>
+                        <Label Text="Vol" TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding Spread.Value.VolumeBuyOnASellOnBInQuoteCcy, StringFormat='{0:F2}'}" TextColor="Gray" FontSize="Small"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="BuyOnBSellOnA" TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding Spread.Value.SpreadBuyOnBSellOnA, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>
+                        <Label Text="Vol" TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding Spread.Value.VolumeBuyOnBSellOnAInQuoteCcy, StringFormat='{0:F2}'}" TextColor="Gray" FontSize="Small"/>
                     </StackLayout>
                 </StackLayout>
 

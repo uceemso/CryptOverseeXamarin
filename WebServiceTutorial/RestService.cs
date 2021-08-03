@@ -46,16 +46,20 @@ namespace CryptOverseeMobileApp
             }
         }
 
-        public async Task<List<Spread>> GetSpreadsAsync(string uri)
+        public async Task<ChocoExchangeResultSpread> GetSpreadsAsync(string uri)
         {
-            var content = await GetResponse(uri);
             try
             {
-                return JsonConvert.DeserializeObject<List<Spread>>(content);
+                var content = await GetResponse(uri);
+                return JsonConvert.DeserializeObject<ChocoExchangeResultSpread>(content);
             }
             catch (Exception ex)
             {
-                throw new RestCallParsingException($"Couldn't parse the response of {uri}", ex);
+                return new ChocoExchangeResultSpread
+                {
+                    Message = ex.Message,
+                    Success = false
+                };
             }
         }
 

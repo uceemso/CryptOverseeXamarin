@@ -38,25 +38,6 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             }
         }
 
-        private protected bool ShouldDisplayExchange(IEnumerable<SettingItemViewModel> entries, string exchangeName)
-        {
-            var x = entries.FirstOrDefault(_ => _.Name == exchangeName)?.Enabled;
-            return x ?? true;
-        }
-
-        private protected bool ShouldDisplayMarket(string marketSymbol)
-        {
-            var currencies = marketSymbol.Split('/');
-            var baseCcy = currencies[0];
-            var quoteCcy = currencies[1];
-
-            var symbolsAccepted = MarketsVM.GetValues().Where(_ => _.Enabled).Select(_ => _.Name).ToList();
-            
-            return symbolsAccepted.Contains(baseCcy) && symbolsAccepted.Contains(quoteCcy);
-        }
-
-
-
     }
 
 }

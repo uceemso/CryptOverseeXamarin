@@ -29,11 +29,11 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
         public ReactiveProperty<double> MinSpreadRounded { get; set; }
 
 
-        public IEnumerable<Spread> ApplySettings(IEnumerable<Spread> spreads)
+        public IEnumerable<SpreadModel> ApplySettings(IEnumerable<SpreadModel> spreads)
         {
             var filteredSpreads = spreads.Where(_ =>
-                ShouldDisplayExchange(ExchangesVM.GetValues(), _.SellOn) && ShouldDisplayExchange(ExchangesVM.GetValues(), _.BuyOn)
-                && ShouldDisplayMarket(_.Symbol) && _.SpreadValue >= MinSpread.Value);
+                SettingsHelper.ShouldDisplayBasedOnExchangeSettings(ExchangesVM.GetValues(), _.SellOn, _.BuyOn)
+                && SettingsHelper.ShouldDisplayMarket(MarketsVM.GetValues(), _.Symbol) && _.SpreadValue >= MinSpread.Value);
 
             return filteredSpreads;
         }

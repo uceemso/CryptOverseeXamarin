@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ChocoExchangesApi;
@@ -22,16 +23,17 @@ using Spread = ChocoExchangesApi.Models.Spread;
 
 namespace CryptOverseeMobileApp.ViewModels
 {
-    public class MyPopupPageViewModel : ViewModelBase
+    public class MyPopupPageLiveSpreadViewModel : ViewModelBase
     {
 
-        private CancellationTokenSource _token = new CancellationTokenSource();
+        private CancellationTokenSource _token;
 
-        public MyPopupPageViewModel()
+        public MyPopupPageLiveSpreadViewModel()
         {
 
             Spread = new ReactiveProperty<Spread>();
-            
+            LastUpdate = new ReactiveProperty<DateTime>();
+
             Model = new PlotModel {Title = "Hello, Forms!"};
             Model2 = LineSeries();
             Model3 = LineSeriesExample3();
@@ -94,49 +96,46 @@ namespace CryptOverseeMobileApp.ViewModels
         public Model Model2 { get; set; }
         public Model Model3 { get; set; }
         public Chart Chart { get; set; }
-        
-        public HistoricalSpreadModel HistSpread { get; set; }
-        public string Symbol { get; set; }
+        public SpreadModel SpreadModel { get; private set; }
+        public string Symbol { get; private set; }
+        public string BaseCurrency { get; private set; }
+        public string QuoteCurrency { get; private set; }
+        public string ExchangeA { get; private set; }
+        public string ExchangeB { get; private set; }
         public bool IsOn { get; set; }
         public double MinAverageSpread { get; set; }
+        public ReactiveProperty<Spread> Spread { get; set; }
+        public ReactiveProperty<DateTime> LastUpdate { get; set; }
 
-        public ReactiveProperty<ChocoExchangesApi.Models.Spread> Spread { get; set; }
 
 
-        //public void RefreshSpread(SupportedExchangeName exchangeA, SupportedExchangeName exchangeB, string baseCcy, string quoteCcy)
-        //{
-        //    Task.Factory.StartNew(async () =>
-        //    {
-        //        while (true)
-        //        {
-        //            Spread.Value = await Helpers.Test(exchangeA, exchangeB, baseCcy, quoteCcy);
-        //            await Task.Delay(new TimeSpan(0, 0, 1));
-        //            Console.WriteLine($"UPDATED SPREADS");
-
-        //        }
-        //    });
-        //}        
-        
-        public void RefreshSpread(HistoricalSpreadModel item)
+        public void StartLiveFeed(SpreadModel item)
         {
+            _token = new CancellationTokenSource();
             Symbol = item.Symbol;
-            HistSpread = item;
+            BaseCurrency = item.BaseCurrency;
+            QuoteCurrency = item.SellOn;
+            ExchangeA = item.BuyOn;
+            SpreadModel = item;
             MinAverageSpread = MinAverageSpread;
+            Spread.Value = null;
+
             var exchangeA = (SupportedExchangeName)Enum.Parse(typeof(SupportedExchangeName), item.BuyOn);
             var exchangeB = (SupportedExchangeName)Enum.Parse(typeof(SupportedExchangeName), item.SellOn);
             
             Task.Factory.StartNew(async () =>
             {
-                while (true)
+                while (!_token.Token.IsCancellationRequested)
                 {
                     Spread.Value = await Helpers.Test(exchangeA, exchangeB, item.BaseCurrency, item.QuoteCurrency);
-                    Console.WriteLine($"UPDATED SPREADS");
+                    LastUpdate.Value = DateTime.Now;
+                    Console.WriteLine($"[{LastUpdate.Value}] UPDATED SPREADS {item.Symbol}");
 
                 }
             }, _token.Token);
         }
 
-        public void CancelTask()
+        public void Dispose()
         {
             _token.Cancel();
         }

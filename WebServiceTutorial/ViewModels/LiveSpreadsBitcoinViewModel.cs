@@ -23,10 +23,9 @@ namespace CryptOverseeMobileApp.ViewModels
         readonly RestService _restService;
         private bool _isRefreshing;
         private string _someString;
-        private MyPopupPageViewModel _popupViewModel;
         private bool _doNotShowPopupOnSelectedItemUpdate;
 
-        private List<Spread> _unfilteredSpreads = new();
+        private List<SpreadModel> _unfilteredSpreads = new();
 
         public INavigation Navigation { get; set; }
 
@@ -36,13 +35,11 @@ namespace CryptOverseeMobileApp.ViewModels
             _settingViewModel = new BitcoinSettingsViewModel();
             _settingPopup = new SettingsContentPage(_settingViewModel);
 
-            Spreads = new ReactiveProperty<ObservableCollection<Spread>>(new ObservableCollection<Spread>());
-            SelectedSpread = new ReactiveProperty<Spread>();
+            Spreads = new ReactiveProperty<ObservableCollection<SpreadModel>>(new ObservableCollection<SpreadModel>());
+            SelectedSpread = new ReactiveProperty<SpreadModel>();
             SelectedSpread.Subscribe(newValue =>
             {
                 PreviouslySelectedSpread = newValue;
-                _popupViewModel = new MyPopupPageViewModel();
-                _popupViewModel.Symbol = newValue?.Symbol;
             });
 
 
@@ -61,14 +58,14 @@ namespace CryptOverseeMobileApp.ViewModels
         {
             var orderedSpreads = _unfilteredSpreads.OrderByDescending(_ => _.SpreadValue);
             var filteredSpreads = _settingViewModel.ApplySettings(orderedSpreads).ToList();
-            Spreads.Value = new ObservableCollection<Spread>(filteredSpreads);
+            Spreads.Value = new ObservableCollection<SpreadModel>(filteredSpreads);
         }
 
         private async void UpdateBitcoinSpreadsOnce()
         {
             try
             {
-                _unfilteredSpreads = await _restService.GetSpreadsAsync(Constants.BitcoinSpreadEndpoint);
+                _unfilteredSpreads = (await _restService.GetSpreadsAsync(Constants.BitcoinSpreadEndpoint)).Data;
 
                 _settingViewModel.InitialiseSettings(new List<ISpread>(_unfilteredSpreads));
 
@@ -103,7 +100,7 @@ namespace CryptOverseeMobileApp.ViewModels
 
         private void OnClearButtonClicked()
         {
-            Spreads.Value = new ObservableCollection<Spread>();
+            Spreads.Value = new ObservableCollection<SpreadModel>();
         }
 
 
@@ -126,14 +123,14 @@ namespace CryptOverseeMobileApp.ViewModels
             }); }
         }
 
-        public ICommand RefreshCommand
+        public ICommand RefreshBitcoinSpdCommand
         {
             get { return new Command(x => RefreshButtonPushed()); }
         }
 
-        public ReactiveProperty<ObservableCollection<Spread>> Spreads { get; }
-        public ReactiveProperty<Spread> SelectedSpread { get; }
-        public Spread PreviouslySelectedSpread { get; set; }
+        public ReactiveProperty<ObservableCollection<SpreadModel>> Spreads { get; }
+        public ReactiveProperty<SpreadModel> SelectedSpread { get; }
+        public SpreadModel PreviouslySelectedSpread { get; set; }
 
 
         public bool IsRefreshing
@@ -167,7 +164,7 @@ namespace CryptOverseeMobileApp.ViewModels
                 {
                     if (!_doNotShowPopupOnSelectedItemUpdate)
                     {
-                        await Navigation.PushPopupAsync(new MyPopupPage(_popupViewModel));
+                        //await Navigation.PushPopupAsync(new MyPopupPage(_popupViewModel));
                         //await Rg.Plugins.Popup.Services.PopupNavigation.Instance.PushAsync(new MyPopupPage(_popupViewModel));
                     }
 

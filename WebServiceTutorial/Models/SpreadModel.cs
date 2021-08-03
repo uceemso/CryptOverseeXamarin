@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
 using Newtonsoft.Json;
 
 namespace CryptOverseeMobileApp.Models
 {
-    public class Spread : ISpread
+    public class SpreadModel : ISpread
     {
         [JsonProperty("id")]
         public int Id { get; set; }
@@ -31,6 +32,10 @@ namespace CryptOverseeMobileApp.Models
 
         [JsonProperty("spot")]
         public double Spot { get; set; }
+
+        public string BaseCurrency => Symbol.Split('/').First();
+        public string QuoteCurrency => Symbol.Split('/').Last();
+
 
         public override string ToString()
         {

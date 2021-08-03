@@ -32,3 +32,12 @@ using Android.App;
 // Add some common permissions, these can be removed if not needed
 [assembly: UsesPermission(Android.Manifest.Permission.Internet)]
 [assembly: UsesPermission(Android.Manifest.Permission.WriteExternalStorage)]
+
+// To monitor internet access connectivity https://docs.microsoft.com/en-us/xamarin/essentials/connectivity?tabs=android
+[assembly: UsesPermission(Android.Manifest.Permission.AccessNetworkState)]
+
+#if DEBUG
+[assembly: Application(Debuggable = true)]
+#else
+[assembly: Application(Debuggable=false)]
+#endif

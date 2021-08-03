@@ -39,16 +39,21 @@
             <!--<ActivityIndicator HeightRequest="30" IsVisible="{Binding ActivityIndicatorRunning.Value}" IsRunning="{Binding ActivityIndicatorRunning.Value}"/>-->
 
 
-            <RefreshView IsRefreshing="{Binding IsRefreshing.Value}" Command="{Binding RefreshCommand}">
+            <RefreshView IsRefreshing="{Binding IsRefreshing.Value}" Command="{Binding RefreshHistSpreadCommand}">
 
-                <CollectionView ItemsSource="{Binding Spreads.Value}" SelectionMode="Single" ItemsUpdatingScrollMode="KeepLastItemInView"
-                                SelectedItem="{Binding SelectedSpread.Value}" SelectionChangedCommand="{Binding SelectedTagChanged}">
+                <CollectionView ItemsSource="{Binding Spreads.Value}" SelectionMode="Single" ItemsUpdatingScrollMode="KeepLastItemInView">
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
                             <StackLayout Orientation="Vertical" Margin="0,5,0,0">
-                                <StackLayout Orientation="Vertical">
+                                <Frame Margin="1" Padding="0" CornerRadius="0" HorizontalOptions="FillAndExpand" BorderColor="Transparent" BackgroundColor="Transparent" >
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference HistoricalSpreadPageName}}"
+                                                              CommandParameter="{Binding}" NumberOfTapsRequired="1" />
+                                    </Frame.GestureRecognizers>
+                                    <StackLayout Orientation="Vertical">
+                                        <StackLayout Orientation="Vertical">
 
-                                    <!--<StackLayout Orientation="Horizontal">
+                                            <!--<StackLayout Orientation="Horizontal">
                                         <Label Text="{Binding Symbol}" TextColor="Gray" FontSize="Large" />
                                         <Label Text="Buy on:" TextColor="Silver" FontSize="Small" Margin="0, 7, 0, 0" />
                                         <Label Text="{Binding BuyOn}" TextColor="Gray" FontSize="Default" Margin="0,7,0,0"/>
@@ -56,14 +61,14 @@
                                         <Label Text="{Binding SellOn}" TextColor="Gray" FontSize="Default" Margin="0,7,0,0"/>
                                     </StackLayout>-->
 
-                                    <StackLayout Orientation="Horizontal" VerticalOptions="Center">
-                                        <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="Center">
-                                            <Label Text="{Binding BaseCurrency}" TextColor="Black" FontSize="Large" VerticalOptions="Center" />
-                                            <Label Text="/" TextColor="Gray" FontSize="Body" VerticalOptions="Center" />
-                                            <Label Text="{Binding QuoteCurrency, StringFormat='{0:F2}'}" TextColor="Gray" FontSize="Body" VerticalOptions="Center" />
-                                        </StackLayout>
+                                            <StackLayout Orientation="Horizontal" VerticalOptions="Center">
+                                                <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="Center">
+                                                    <Label Text="{Binding BaseCurrency}" TextColor="Black" FontSize="Large" VerticalOptions="Center" />
+                                                    <Label Text="/" TextColor="Gray" FontSize="Body" VerticalOptions="Center" />
+                                                    <Label Text="{Binding QuoteCurrency, StringFormat='{0:F2}'}" TextColor="Gray" FontSize="Body" VerticalOptions="Center" />
+                                                </StackLayout>
 
-                                        <!--<StackLayout Orientation="Horizontal" HorizontalOptions="End" WidthRequest="150">
+                                                <!--<StackLayout Orientation="Horizontal" HorizontalOptions="End" WidthRequest="150">
                                             <StackLayout Orientation="Vertical">
                                                 <Label Text="Buy on:" TextColor="Silver" FontSize="Caption" Margin="0" />
                                                 <Label Text="{Binding BuyOn}" TextColor="Gray" FontSize="Default" Margin="0,-7,0,0"/>
@@ -73,25 +78,24 @@
                                                 <Label Text="{Binding SellOn}" TextColor="Gray" FontSize="Default" Margin="0,-7,0,0"/>
                                             </StackLayout>
                                         </StackLayout>-->
-                                        <StackLayout Orientation="Horizontal" VerticalOptions="Center">
-                                            <Label Text="Buy on:" TextColor="Silver" FontSize="Caption" VerticalOptions="Center" />
-                                            <Label Text="{Binding BuyOn}" TextColor="Gray" FontSize="Default" VerticalOptions="Center" />
-                                            <Label Text="Sell on:" TextColor="Silver" FontSize="Caption" VerticalOptions="Center" />
-                                            <Label Text="{Binding SellOn}" TextColor="Gray" FontSize="Default" VerticalOptions="Center"/>
-                                        </StackLayout>
+                                                <StackLayout Orientation="Horizontal" VerticalOptions="Center">
+                                                    <Label Text="Buy on:" TextColor="Silver" FontSize="Caption" VerticalOptions="Center" />
+                                                    <Label Text="{Binding BuyOn}" TextColor="Gray" FontSize="Default" VerticalOptions="Center" />
+                                                    <Label Text="Sell on:" TextColor="Silver" FontSize="Caption" VerticalOptions="Center" />
+                                                    <Label Text="{Binding SellOn}" TextColor="Gray" FontSize="Default" VerticalOptions="Center"/>
+                                                </StackLayout>
 
+                                            </StackLayout>
 
-                                    </StackLayout>
-
-                                    <StackLayout Orientation="Vertical">
-                                        <StackLayout Orientation="Horizontal" Margin="0, -5, 0, 0">
-                                            <Label Text="Spread:" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                            <Label Text="Avg." TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                            <Label Text="{Binding AverageSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Default"/>
-                                            <Label Text="Max." TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                            <Label Text="{Binding MaxSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Default"/>
-                                        </StackLayout>
-                                        <!--<StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                                            <StackLayout Orientation="Vertical">
+                                                <StackLayout Orientation="Horizontal" Margin="0, -5, 0, 0">
+                                                    <Label Text="Spread:" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
+                                                    <Label Text="Avg." TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
+                                                    <Label Text="{Binding AverageSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Default"/>
+                                                    <Label Text="Max." TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
+                                                    <Label Text="{Binding MaxSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Default"/>
+                                                </StackLayout>
+                                                <!--<StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
                                             <Label Text="Spd higher than" TextColor="Silver" FontSize="Small" />
                                             <Label Text="{Binding Path=BindingContext.MinAverageSpread, Source={x:Reference HistoricalSpreadPageName}, StringFormat='{0:F1} % '}" 
                                                    TextColor="Gray" FontSize="Small" />
@@ -100,24 +104,28 @@
                                                    TextColor="Gray" FontSize="Small" />
                                             <Label Text="of the time" TextColor="Silver" FontSize="Small" />
                                         </StackLayout>-->
-                                        <StackLayout Orientation="Horizontal" Margin="0, -5, 0, 0">
-                                            <Label Text="Spd higher than" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                            <Label Text="{Binding Path=BindingContext.MinAverageSpread, Source={x:Reference HistoricalSpreadPageName}, StringFormat='{0:F1} % '}" 
+                                                <StackLayout Orientation="Horizontal" Margin="0, -5, 0, 0">
+                                                    <Label Text="Spd higher than" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
+                                                    <Label Text="{Binding Path=BindingContext.MinAverageSpread, Source={x:Reference HistoricalSpreadPageName}, StringFormat='{0:F1} % '}" 
                                                    TextColor="Gray" FontSize="Default" />
-                                            <Label Text="about" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                            <Label Text="{Binding SpreadOccurence, StringFormat='{0:F0} %'}" 
+                                                    <Label Text="about" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
+                                                    <Label Text="{Binding SpreadOccurence, StringFormat='{0:F0} %'}" 
                                                    TextColor="Gray" FontSize="Default" />
-                                            <Label Text="of the time" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                        </StackLayout>
-                                        <!--<StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                                                    <Label Text="of the time" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
+                                                </StackLayout>
+                                                <!--<StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
                                             <Label Text="Nber data points" TextColor="Silver" FontSize="Small"/>
                                             <Label Text="{Binding NbDataPoints}" TextColor="Gray" FontSize="Small"/>
                                         </StackLayout>-->
 
+                                            </StackLayout>
+                                        </StackLayout>
+                                        <!-- Separator -->
+                                        <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End"/>
                                     </StackLayout>
-                                </StackLayout>
-                                <!-- Separator -->
-                                <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End"/>
+                                </Frame>
+                              
+
                             </StackLayout>
                         </DataTemplate>
                     </CollectionView.ItemTemplate>

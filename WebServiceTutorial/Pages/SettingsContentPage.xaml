@@ -61,7 +61,7 @@
 
 
 
-            <views:ObjectSelectorThreeColView BindingContext="{Binding MarketsVM}"/>
+            <views:ObjectSelectorTwoColView BindingContext="{Binding MarketsVM}"/>
 
 
                 <StackLayout.GestureRecognizers>

@@ -9,13 +9,13 @@
 
     <!--Pages can be added as references or inline-->
   <TabbedPage.Children>
-        <NavigationPage Title="Bitcoin" IconImageSource="{OnPlatform iOS=android.svg, Android=scale.png}" >
+        <!--<NavigationPage Title="Bitcoin" IconImageSource="{OnPlatform iOS=android.svg, Android=scale.png}" >
             <x:Arguments>
                 <mypages:LiveSpreadsBitcoin />
             </x:Arguments>
-        </NavigationPage>
+        </NavigationPage>-->
 
-        <!--<mypages:LiveSpread Title="Live Spreads HNT" IconImageSource="{OnPlatform iOS=android.svg, Android=network.png}"/>-->
+        <mypages:LiveSpread Title="Live Spreads" IconImageSource="{OnPlatform iOS=android.svg, Android=network.png}"/>
         <mypages:HistoricalSpreads Title="Historical Spreads" IconImageSource="{OnPlatform iOS=android.svg, Android=network.png}"/>
 
 <!--<ContentPage Title="Tab abc" />-->

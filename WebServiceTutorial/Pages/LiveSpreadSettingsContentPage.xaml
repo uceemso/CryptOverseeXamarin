@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:CryptOverseeMobileApp.ViewModels;assembly=CryptOverseeMobileApp"
+             xmlns:views="clr-namespace:CryptOverseeMobileApp.Pages;assembly=CryptOverseeMobileApp"
+             xmlns:settings="clr-namespace:CryptOverseeMobileApp.ViewModels.Settings;assembly=CryptOverseeMobileApp"
+             xmlns:b="clr-namespace:Xamarin.Forms.BehaviorsPack;assembly=Xamarin.Forms.BehaviorsPack"
+             xmlns:converters="clr-namespace:CryptOverseeMobileApp.Converters;assembly=CryptOverseeMobileApp"
+
+             x:Class="CryptOverseeMobileApp.Pages.LiveSpreadSettingsContentPage"
+             NavigationPage.HasNavigationBar="true"
+             x:Name="LiveSpreadSettingsName">
+
+    <ContentPage.BindingContext>
+        <settings:LiveSpreadSettingsViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+
+        <StackLayout Margin="10,10,20,20">
+
+            <StackLayout Orientation="Horizontal" >
+                <Label Margin="0,0,0,0" Text="Settings" TextColor="Black" FontSize="Title"  />
+                <Button Text="✖️" HeightRequest="30" WidthRequest="30" FontSize="Large" HorizontalOptions="EndAndExpand" Margin="0,0,0,0" Padding="0" 
+                        BackgroundColor="Transparent" Clicked="OnDismissButtonClicked" />
+            </StackLayout>
+
+            <Label Text="Show pairs which have a spread higher" TextColor="Gray" FontSize="Default" />
+            <StackLayout Orientation="Horizontal">
+                <Label Text="than" TextColor="Gray" FontSize="Default" />
+                <Label Text="{Binding MinAverageSpreadRounded.Value, StringFormat='{0:F2} %'}" TextColor="Gray" FontAttributes="Bold"  />
+            </StackLayout>
+            <Slider Minimum="0" Maximum="5" ThumbColor="DodgerBlue" BackgroundColor="Transparent" Scale="1.5" HorizontalOptions="Center" 
+                    WidthRequest="200" HeightRequest="40"
+                    MaximumTrackColor="LightGray" MinimumTrackColor="DodgerBlue" Value="{Binding MinAverageSpread.Value, Mode=TwoWay}" />
+          
+
+            <!-- Separator -->
+            <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End" Margin="0,0,0,10"/>
+
+            <Label Text="Set Exchanges preferences" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" />
+
+            <StackLayout >
+                <FlexLayout BindableLayout.ItemsSource="{Binding ExchangesVM.Values.Value}"  Wrap="Wrap" >
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="2" HeightRequest="30" >
+                                <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DodgerBlue" BorderColor="Transparent"  VerticalOptions="Start"
+                                       IsVisible="{Binding Enabled}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference LiveSpreadSettingsName}}"
+                                                              CommandParameter="{Binding}" NumberOfTapsRequired="1" />
+                                    </Frame.GestureRecognizers>
+                                    <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>
+                                </Frame>
+                                <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DarkGray" BorderColor="Transparent" VerticalOptions="Start"
+                                       IsVisible="{Binding Enabled, Converter={StaticResource InverseBoolConverter}}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference LiveSpreadSettingsName}}"
+                                                              CommandParameter="{Binding}" NumberOfTapsRequired="1" />
+                                    </Frame.GestureRecognizers>
+                                    <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+            </StackLayout>
+
+            <!-- Separator -->
+            <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End" Margin="0,0,0,10"/>
+
+            <Label Text="Set Markets preferences" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" />
+
+            <StackLayout >
+                <FlexLayout BindableLayout.ItemsSource="{Binding MarketsVM.Values.Value}"  Wrap="Wrap" >
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="2" HeightRequest="30" >
+                                <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DodgerBlue" BorderColor="Transparent"  VerticalOptions="Start"
+                                       IsVisible="{Binding Enabled}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference LiveSpreadSettingsName}}"
+                                                              CommandParameter="{Binding}" NumberOfTapsRequired="1" />
+                                    </Frame.GestureRecognizers>
+                                    <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>
+                                </Frame>
+                                <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DarkGray" BorderColor="Transparent" VerticalOptions="Start"
+                                       IsVisible="{Binding Enabled, Converter={StaticResource InverseBoolConverter}}">
+                                    <Frame.GestureRecognizers>
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference LiveSpreadSettingsName}}"
+                                                              CommandParameter="{Binding}" NumberOfTapsRequired="1" />
+                                    </Frame.GestureRecognizers>
+                                    <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </FlexLayout>
+            </StackLayout>
+
+            <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End" Margin="0,0,0,10"/>
+
+            <StackLayout.GestureRecognizers>
+                <SwipeGestureRecognizer Direction="Down" Swiped="OnDismissButtonClicked"/>
+            </StackLayout.GestureRecognizers>
+        </StackLayout>
+
+    </ContentPage.Content>
+</ContentPage>

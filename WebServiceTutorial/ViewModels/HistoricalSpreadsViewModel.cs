@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ChocoExchangesApi.Models;
 using CryptOverseeMobileApp.Models;
 using Reactive.Bindings;
 using CryptOverseeMobileApp.Pages;
@@ -20,7 +21,7 @@ namespace CryptOverseeMobileApp.ViewModels
     {
         private readonly HistoricalSettingsContentPage _settingPopup;
         private readonly HistoricalSettingsViewModel _settingViewModel;
-        private MyPopupPageViewModel _popupViewModel;
+        //private MyPopupPageViewModel _popupViewModel;
         
         readonly RestService _restService;
         private List<HistoricalSpreadModel> _unfilteredSpreads = new();
@@ -34,7 +35,7 @@ namespace CryptOverseeMobileApp.ViewModels
 
             _settingViewModel = new HistoricalSettingsViewModel();
             _settingPopup = new HistoricalSettingsContentPage(_settingViewModel);
-            _popupViewModel = new MyPopupPageViewModel();
+            //_popupViewModel = new MyPopupPageViewModel();
 
             _restService = new RestService();
             InitialiseDataOnStart();
@@ -49,9 +50,9 @@ namespace CryptOverseeMobileApp.ViewModels
             SelectedSpread = new ReactiveProperty<HistoricalSpreadModel>();
             SelectedSpread.Where(_ => _ != null).Subscribe(newValue =>
             {
-                _popupViewModel.Symbol = newValue.Symbol;
-                _popupViewModel.HistSpread = newValue;
-                _popupViewModel.MinAverageSpread = MinAverageSpread;
+                //_popupViewModel.Symbol = newValue.Symbol;
+                //_popupViewModel.HistSpread = newValue;
+                //_popupViewModel.MinAverageSpread = MinAverageSpread;
             });
 
             NumberResultsAfterFiltering = new ReactiveProperty<int>(0);
@@ -66,40 +67,81 @@ namespace CryptOverseeMobileApp.ViewModels
         public ReactiveProperty<ObservableCollection<HistoricalSpreadModel>> Spreads { get; set; }
         public ReactiveProperty<HistoricalSpreadModel> SelectedSpread { get; set; }
 
-        public ICommand RefreshCommand { get { return new Command(_ => RefreshData()); } }
+        public ICommand RefreshHistSpreadCommand { get { return new Command(_ => RefreshData()); } }
 
-        public Command SelectedTagChanged
+        //public Command SelectedTagChanged
+        //{
+        //    get { return new(async () => { await Navigation.PushPopupAsync(new MyPopupPage(_popupViewModel)); }); }
+        //}
+
+        public ICommand SelectedPictureChangedCommand
         {
-            get { return new(async () => { await Navigation.PushPopupAsync(new MyPopupPage(_popupViewModel)); }); }
+            get
+            {
+                return new Command(async selectedItem =>
+                {
+                    try
+                    {
+                        var item = (HistoricalSpreadModel)selectedItem;
+                        var vm = new MyPopupPageViewModel();
+                        //vm.Symbol = item.Symbol;
+                        //vm.HistSpread = item;
+                        //vm.MinAverageSpread = MinAverageSpread;
+                        //var exchangeA = (SupportedExchangeName) Enum.Parse(typeof(SupportedExchangeName), item.BuyOn);
+                        //var exchangeB = (SupportedExchangeName) Enum.Parse(typeof(SupportedExchangeName), item.SellOn);
+                        //vm.RefreshSpread(exchangeA, exchangeB, item.BaseCurrency, item.QuoteCurrency);
+                        vm.RefreshSpread(item);
+                        await Navigation.PushPopupAsync(new MyPopupPage(vm));
+
+
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
+                });
+            }
         }
 
         public void RefreshData()
         {
-            var stopwatch = Stopwatch.StartNew();
-            IsRefreshing.Value = true;
-
-
-            _unfilteredSpreads = _unfilteredSpreadsDic[_settingViewModel.NumberHours.Value];
-            _settingViewModel.InitialiseSettings(new List<ISpread>(_unfilteredSpreads));
-            NumberResultsRaw.Value = _unfilteredSpreads.Count;
-            
-            var filteredSpreads = _settingViewModel.ApplySettings(_unfilteredSpreads).ToList();
-            
-            foreach (var spread in filteredSpreads)
+            try
             {
-                spread.SpreadOccurence = spread.GetSpreadOccurence(_settingViewModel.MinAverageSpread.Value);
-            }
-            
-            Spreads.Value = new ObservableCollection<HistoricalSpreadModel>(filteredSpreads);
-            NumberResultsAfterFiltering.Value = filteredSpreads.Count;
-            IsRefreshing.Value = false;
-            stopwatch.Stop();
-            Console.WriteLine($"HistoricalSpread - Refreshed data in {stopwatch.ElapsedMilliseconds} ms");
+                var stopwatch = Stopwatch.StartNew();
+                IsRefreshing.Value = true;
 
-            if (!_settingViewModel.ExchangesVM.Values.Value.Any())
-            {
+
+                _unfilteredSpreads = _unfilteredSpreadsDic[_settingViewModel.NumberHours.Value];
                 _settingViewModel.InitialiseSettings(new List<ISpread>(_unfilteredSpreads));
+                NumberResultsRaw.Value = _unfilteredSpreads.Count;
+
+                var filteredSpreads = _settingViewModel.ApplySettings(_unfilteredSpreads).ToList();
+
+                foreach (var spread in filteredSpreads)
+                {
+                    spread.SpreadOccurence = spread.GetSpreadOccurence(_settingViewModel.MinAverageSpread.Value);
+                }
+
+                Spreads.Value = new ObservableCollection<HistoricalSpreadModel>(filteredSpreads);
+                NumberResultsAfterFiltering.Value = filteredSpreads.Count;
+
+                stopwatch.Stop();
+                Console.WriteLine($"HistoricalSpread - Refreshed data in {stopwatch.ElapsedMilliseconds} ms");
+
+                if (!_settingViewModel.ExchangesVM.Values.Value.Any())
+                {
+                    _settingViewModel.InitialiseSettings(new List<ISpread>(_unfilteredSpreads));
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+            finally
+            {
+                IsRefreshing.Value = false;
+            }
+
         }
 
         private void InitialiseDataOnStart()
@@ -112,18 +154,19 @@ namespace CryptOverseeMobileApp.ViewModels
                     var hours = new List<int> {1, 24, 48, 72, 168};
                     var stopwatch = Stopwatch.StartNew();
                     var spreads1 = _restService.GetHistoricalSpreadsAsync(1);
-                    var spreads24 = _restService.GetHistoricalSpreadsAsync(24);
+                    //var spreads24 = _restService.GetHistoricalSpreadsAsync(24);
                     var spreads48 = _restService.GetHistoricalSpreadsAsync(48);
-                    var spreads72 = _restService.GetHistoricalSpreadsAsync(72);
-                    var spreads168 = _restService.GetHistoricalSpreadsAsync(168);
+                    //var spreads72 = _restService.GetHistoricalSpreadsAsync(72);
+                    //var spreads168 = _restService.GetHistoricalSpreadsAsync(168);
 
-                    await Task.WhenAll(new List<Task>() {spreads1, spreads24, spreads48, spreads72, spreads168});
+                    //await Task.WhenAll(new List<Task>() {spreads1, spreads24, spreads48, spreads72, spreads168});
+                    await Task.WhenAll(new List<Task>() {spreads1, spreads48});
 
                     _unfilteredSpreadsDic[1] = spreads1.Result;
-                    _unfilteredSpreadsDic[24] = spreads24.Result;
+                    //_unfilteredSpreadsDic[24] = spreads24.Result;
                     _unfilteredSpreadsDic[48] = spreads48.Result;
-                    _unfilteredSpreadsDic[72] = spreads72.Result;
-                    _unfilteredSpreadsDic[168] = spreads168.Result;
+                    //_unfilteredSpreadsDic[72] = spreads72.Result;
+                    //_unfilteredSpreadsDic[168] = spreads168.Result;
 
                     stopwatch.Stop();
                     Console.WriteLine($"Get data took {stopwatch.ElapsedMilliseconds} ms");
@@ -152,9 +195,10 @@ namespace CryptOverseeMobileApp.ViewModels
             {
                 return new Command(async _ =>
                 {
-                    if (Navigation != null && Navigation.ModalStack.Count == 0)
+                    var navigation = Application.Current.MainPage.Navigation;
+                    if (navigation != null && navigation.ModalStack.Count == 0)
                     {
-                        await Navigation.PushModalAsync(_settingPopup);
+                        await navigation.PushModalAsync(_settingPopup);
                     }
                     else
                     {
