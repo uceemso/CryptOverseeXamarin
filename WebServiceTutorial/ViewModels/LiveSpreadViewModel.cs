@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ChocoExchangesApi.Models;
-using ChocoExchangesCommon;
+using ChocoExchangesApi.Services;
 using CryptOverseeMobileApp.Pages;
 using CryptOverseeMobileApp.ViewModels.Settings;
 using Reactive.Bindings;
-using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
 using SpreadModel = CryptOverseeMobileApp.Models.SpreadModel;
 
@@ -18,23 +17,26 @@ namespace CryptOverseeMobileApp.ViewModels
 {
     public class LiveSpreadViewModel : ViewModelBase
     {
-        RestService _restService;
-        private SpreadModel _selectedSpread;
-        private readonly CryptoWatchNewOnce _cryptoWatch = new();
+        private readonly RestService _restService;
         private readonly LiveSpreadSettingsViewModel _settingViewModel;
+        private readonly LiveSpreadDetails _liveSpreadDetails;
+        private bool _premiumMembership;
+
+        private bool _googlePlayConnected;
         private string _searchBar;
+        private List<SpreadNote> _notes = new List<SpreadNote>();
         private List<SpreadModel> _unfilteredSpreads;
         private List<SpreadModel> _settingsFilteredSpreads;
-        private readonly MyPopupPageLiveSpreadViewModel _popupViewModel;
-
+        
 
         public LiveSpreadViewModel()
         {
+            
             _restService = new RestService();
-
             _settingViewModel = new LiveSpreadSettingsViewModel();
-            _popupViewModel = new MyPopupPageLiveSpreadViewModel();
+            _liveSpreadDetails = new LiveSpreadDetails();
 
+            SearchText = new ReactiveProperty<string>();
             IsRefreshing = new ReactiveProperty<bool>();
             CryptoWatchTargets = new ReactiveProperty<ObservableCollection<CryptoWatchTarget>>(new ObservableCollection<CryptoWatchTarget>());
             Spreads = new ReactiveProperty<ObservableCollection<SpreadModel>>(new ObservableCollection<SpreadModel>());
@@ -46,15 +48,19 @@ namespace CryptOverseeMobileApp.ViewModels
                 NumberResultsAfterFiltering.Value = spreads.Count;
             });
 
+
+
+            Task.Factory.StartNew(async () =>
+            {
+                _premiumMembership = await PurchasesHelper.WasItemPurchased(PurchasesHelper.ProductCode);
+                _settingViewModel.PremiumMembership.Value = _premiumMembership;
+            });
+
             Task.Factory.StartNew(async () =>
             {
                 while (true)
                 {
                     await RefreshSpreads();
-                    //var results = _cryptoWatch.RunOnce();
-                    //var filtered = results.Where(_ => _.SpreadBuyOnASellOnB > (decimal?) 0.5 || _.SpreadBuyOnBSellOnA > (decimal?) 0.5).ToList().OrderByDescending(_ => _.SpreadBuyOnASellOnB);
-                    //CryptoWatchTargets.Value = new ObservableCollection<CryptoWatchTarget>(filtered);
-
                     await Task.Delay(new TimeSpan(0, 0, 300));
                 }
             });
@@ -63,19 +69,40 @@ namespace CryptOverseeMobileApp.ViewModels
         public INavigation Navigation { get; set; }
         private async Task RefreshSpreads()
         {
-            //if (IsRefreshing.Value)
-            //{
-            //    Console.WriteLine($"Already refreshing LiveSpread grid...");
-            //    return;
-            //}
-
             try
             {
                 IsRefreshing.Value = true;
-                var serverResult = await _restService.GetSpreadsAsync(Constants.GetRecentSpreads);
+                //var serverResult = await _restService.GetSpreadsAsync(Constants.GetRecentSpreads);
+                _notes = await _restService.GetExchangeNotesFromFileShare();
+                _liveSpreadDetails.Notes = _notes;
+
+                var serverResult = await _restService.GetSpreadsFromFileShare();
                 LastUpdate.Value = serverResult.DateTime;
 
+
                 _unfilteredSpreads = serverResult.Data.OrderByDescending(_ => _.SpreadValue).ToList();
+                foreach (var sp in _unfilteredSpreads)
+                {
+                    if (Enum.TryParse(sp.BuyOn, out SupportedExchangeName buyOnExchange) &&
+                        Enum.TryParse(sp.SellOn, out SupportedExchangeName sellOnExchange))
+                    {
+                        var notes = ExchangesData.FilterNotes(sp.BaseCurrency, buyOnExchange, sellOnExchange);
+                        if (notes.Any())
+                        {
+                            var warning = string.Join('\n', notes.Select(_ => _.Note).ToList()) ;
+                            sp.Warning = warning;
+                            sp.HasWarning = true;
+                        }
+
+                    }
+                    else
+                    {
+                        var xx = 1;
+                    }
+                    ;
+                    ;
+                }
+
                 NumberResultsRaw.Value = _unfilteredSpreads.Count;
 
 
@@ -94,11 +121,6 @@ namespace CryptOverseeMobileApp.ViewModels
                 IsRefreshing.Value = false;
             }
         }
-
-        public ICommand PerformSearch => new Command<string>(( query) =>
-        {
-            ApplySearchBar(query);
-        });
 
         public void ApplySearchBar(string searchBar)
         {
@@ -119,52 +141,14 @@ namespace CryptOverseeMobileApp.ViewModels
         public ReactiveProperty<ObservableCollection<CryptoWatchTarget>> CryptoWatchTargets { get; set; }
         public ReactiveProperty<ObservableCollection<SpreadModel>> Spreads { get; set; }
         public ReactiveProperty<DateTime> LastUpdate { get; set; }
+        public ReactiveProperty<string> SearchText { get; set; }
         public ReactiveProperty<int> NumberResultsAfterFiltering { get; set; }
         public ReactiveProperty<int> NumberResultsRaw { get; set; }
-
-        private async void OnButtonClicked()
-        {
-            UpdateSpreadsOnce();
-        }
-
-        private async void UpdateSpreadsOnce()
-        {
-            //var spreads = await _restService.GetSpreadsAsync(Constants.SpreadEndpoint);
-            //Spreads.Value = new ObservableCollection<Spread>(spreads);
-        }
-
-        private void OnClearButtonClicked()
-        {
-            Spreads.Value.Clear();
-            //collectionView.ItemsSource = new List<Spread>();
-        }
-
-        public ICommand ButtonSelectedCommand
-        {
-            get { return new Command(x => OnButtonClicked()); }
-        }
-
-        public ICommand ButtonClearSelectedCommand
-        {
-            get { return new Command(x => OnClearButtonClicked()); }
-        }
-
-        public SpreadModel SelectedSpread
-        {
-            get
-            {
-                return _selectedSpread;
-            }
-            set
-            {
-                _selectedSpread = value;
-                OnPropertyChanged(nameof(SelectedSpread));
-            }
-        }
-
         public ReactiveProperty<bool> IsRefreshing { get; set; }
 
-        public ICommand RefreshCommand { get { return new Command(_ => RefreshGrid()); } }
+        public ICommand PerformSearch => new Command<string>(ApplySearchBar);
+
+        public ICommand RefreshCommand => new Command(_ => RefreshGrid());
 
         public async void RefreshGrid()
         {
@@ -192,7 +176,7 @@ namespace CryptOverseeMobileApp.ViewModels
             }
         }
 
-        public ICommand DisplayLiveSpreadPopupCommand
+        public ICommand DisplayLiveSpreadDetailsPage
         {
             get
             {
@@ -200,19 +184,19 @@ namespace CryptOverseeMobileApp.ViewModels
                 {
                     try
                     {
-                        if (_popupViewModel.IsOn) return; //There is already one popup displayed
-                        
                         var item = (SpreadModel)selectedItem;
-                        _popupViewModel.StartLiveFeed(item);
-                        await Navigation.PushPopupAsync(new MyPopupPageLiveSpread(_popupViewModel));
+                        _liveSpreadDetails.SpreadModel = item;
+                        await Navigation.PushAsync(_liveSpreadDetails);
                     }
                     catch (Exception ex)
                     {
-
+                        Console.WriteLine(ex.Message);
                     }
                 });
             }
         }
+
+        
 
     }
 }

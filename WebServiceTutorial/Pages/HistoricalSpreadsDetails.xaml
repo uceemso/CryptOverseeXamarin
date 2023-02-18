@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:oxy="clr-namespace:OxyPlot.Xamarin.Forms;assembly=OxyPlot.Xamarin.Forms"
+             xmlns:viewModels="clr-namespace:CryptOverseeMobileApp.ViewModels;assembly=CryptOverseeMobileApp"
+             x:Class="CryptOverseeMobileApp.Pages.HistoricalSpreadsDetails">
+    <ContentPage.Content>
+        <StackLayout HorizontalOptions="Center" Padding="0" Margin="0" x:DataType="viewModels:HistoricalSpreadsDetailsViewModel"  >
+
+
+            <StackLayout >
+
+                <Label Text="{Binding Symbol.Value}" TextColor="Black" FontSize="Large" HorizontalOptions="Center" />
+
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Last update" TextColor="Gray" FontSize="Default" />
+                    <Label Text="{Binding LastUpdate.Value, StringFormat='{0:ddMMMyyyy HH:mm:ss}'}" TextColor="Gray" FontSize="Default" />
+                </StackLayout>
+
+                <oxy:PlotView Model="{Binding HistoricalSpreadDataPlot}" VerticalOptions="StartAndExpand" HorizontalOptions="Center" HeightRequest="150"/>
+
+                <StackLayout Orientation="Vertical">
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="Spd higher than" TextColor="Silver" FontSize="Small" />
+                        <Label Text="{Binding MinAverageSpread.Value, StringFormat='{0:F1} % '}" TextColor="Gray" FontSize="Small" />
+                        <Label Text="about" TextColor="Silver" FontSize="Small" />
+                        <Label Text="{Binding SpreadOccurence.Value, StringFormat='{0:F0} %'}" TextColor="Gray" FontSize="Small" />
+                        <Label Text="of the time" TextColor="Silver" FontSize="Small" />
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="Positive spread" TextColor="Silver" FontSize="Small" />
+                        <Label Text="{Binding SpreadOccurence.Value, StringFormat='{0:F0} %'}" TextColor="Gray" FontSize="Small" />
+                        <Label Text="of the time" TextColor="Silver" FontSize="Small" />
+                        <Label Text="(Data points: " TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding NbDataPoints.Value}" TextColor="Gray" FontSize="Small"/>
+                        <Label Text="/" TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding NbBlanks.Value}" TextColor="Gray" FontSize="Small"/>
+                        <Label Text=")" TextColor="Silver" FontSize="Small"/>
+                    </StackLayout>
+
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="Data collected" TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding NbDaysDataWasCollectedPercentage.Value, StringFormat='{0:F0} %'}" TextColor="Gray" FontSize="Small"/>
+                        <Label Text="{Binding NbDaysDataWasCollected.Value, StringFormat='of days (over{0:F0} days)'}" TextColor="Silver" FontSize="Small"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
+                        <Label Text="Spread" TextColor="Silver" FontSize="Small"/>
+                        <Label Text="Avg." TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding AverageSpreadValue.Value, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>
+                        <Label Text="Min." TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding MinAverageSpread.Value, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>
+                        <Label Text="Max." TextColor="Silver" FontSize="Small"/>
+                        <Label Text="{Binding MaxSpreadValue.Value, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Small"/>
+                    </StackLayout>
+                </StackLayout>
+
+
+                <oxy:PlotView Model="{Binding DataPlot}" VerticalOptions="StartAndExpand" HorizontalOptions="Center" HeightRequest="150"/>
+
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"  />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"  />
+                    </Grid.RowDefinitions>
+
+                    <!--BUY-->
+                    <StackLayout Spacing="0" Padding="10,0" Grid.Column="0" Orientation="Vertical" BackgroundColor="Transparent" HorizontalOptions="Start" >
+                        <Label Text="{Binding HistoricalSpreadModel.Value.BuyOn}" TextColor="Gray" FontSize="Default" HorizontalOptions="Center" />
+                        <Label Text="BUY" TextColor="DarkOrange" FontSize="Caption" FontAttributes="Bold"  HorizontalOptions="Center" />
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding BuyPrice.Value}" TextColor="DarkOrange" FontSize="Caption"/>
+                            <Label Text="{Binding HistoricalSpreadModel.Value.QuoteCurrency}" TextColor="DarkOrange" FontSize="Caption"/>
+                        </StackLayout>
+                    </StackLayout>
+
+                    <!--SPREAD/VOLUME-->
+                    <Grid Grid.Column="1" BackgroundColor="Transparent" RowSpacing="0" VerticalOptions="Center">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"  />
+                            <RowDefinition Height="Auto"  />
+                        </Grid.RowDefinitions>
+
+                        <StackLayout Spacing="0" Padding="10,0" Margin="0" Grid.Row="0" Orientation="Horizontal" BackgroundColor="Transparent" HorizontalOptions="Center" >
+                            <Label Text="Spread: " TextColor="Silver" FontSize="Small"/>
+                            <Label BackgroundColor="Transparent" Text="{Binding Spread.Value.SpreadBuyOnASellOnB, StringFormat='{0:F2}%'}" TextColor="Gray" FontSize="Body" HorizontalOptions="Center"  />
+                        </StackLayout>
+                        <StackLayout Spacing="0" Padding="10,0" Margin="0" Grid.Row="1" Orientation="Horizontal" BackgroundColor="Transparent" HorizontalOptions="Center" >
+                            <Label Text="Volume: " TextColor="Silver" FontSize="Small"/>
+                            <Label Text="{Binding Spread.Value.VolumeBuyOnASellOnBInQuoteCcy, StringFormat='{0:F2}'}" TextColor="Gray" FontSize="Small"/>
+                            <Label Text="{Binding HistoricalSpreadModel.Value.QuoteCurrency}" TextColor="Silver" FontSize="Small" Padding="3,0,0,0"/>
+                        </StackLayout>
+                    </Grid>
+
+                    <!--SELL-->
+                    <StackLayout Spacing="0" Padding="10,0" Margin="0" Grid.Column="2" Orientation="Vertical" BackgroundColor="Transparent" HorizontalOptions="EndAndExpand" >
+                        <Label Text="{Binding HistoricalSpreadModel.Value.SellOn}" TextColor="Gray" FontSize="Default" HorizontalOptions="Center" />
+                        <Label Text="SELL" TextColor="MediumAquamarine" FontSize="Caption" FontAttributes="Bold" HorizontalOptions="Center" />
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding SellPrice.Value}" TextColor="MediumAquamarine" FontSize="Caption"/>
+                            <Label Text="{Binding HistoricalSpreadModel.Value.QuoteCurrency}" TextColor="MediumAquamarine" FontSize="Caption"/>
+                        </StackLayout>
+                    </StackLayout>
+                </Grid>
+
+
+
+
+
+            </StackLayout>
+
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

@@ -24,6 +24,8 @@
 
         <StackLayout Margin="10,10,20,20">
 
+
+
             <StackLayout Orientation="Horizontal" >
                 <Label Margin="0,0,0,0" Text="Settings" TextColor="Black" FontSize="Title"  />
                 <Button Text="✖️" HeightRequest="30" WidthRequest="30" FontSize="Large" HorizontalOptions="EndAndExpand" Margin="0,0,0,0" Padding="0" 
@@ -105,6 +107,20 @@
             </StackLayout>
 
             <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End" Margin="0,0,0,10"/>
+
+            <StackLayout Orientation="Vertical" VerticalOptions="End">
+                <Button  Text="☆ GET PREMIUM MEMBERSHIP ☆ &#x0a; To unlock all exchanges"  TextTransform="None" Command="{Binding PurchaseCommand}" TextColor="FloralWhite" BackgroundColor="Goldenrod" 
+                         IsVisible="{Binding PremiumMembership.Value, Converter={StaticResource InverseBoolConverter}}"/>
+                <Label  Text="☆  You are a Premium Member !  ☆"  IsVisible="{Binding PremiumMembership.Value}" 
+                        TextColor="FloralWhite" BackgroundColor="Goldenrod" HeightRequest="50" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+                <Button  Text="Check purchases" HeightRequest="40" Command="{Binding CheckPurchasesCommand}"/>
+                <StackLayout Orientation="Horizontal">
+                    <Label Margin="0,0,0,0" Text="Premium membership: "  />
+                    <Label Margin="0,0,0,0" Text="{Binding PremiumMembership.Value}" TextColor="Black"  />
+                </StackLayout>
+            </StackLayout>
+
+
 
             <StackLayout.GestureRecognizers>
                 <SwipeGestureRecognizer Direction="Down" Swiped="OnDismissButtonClicked"/>

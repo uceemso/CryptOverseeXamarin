@@ -43,7 +43,11 @@ namespace CryptOverseeMobileApp.Pages
 
         private void SearchBar_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            _vm.ApplySearchBar(e.NewTextValue);
+            if (string.IsNullOrEmpty(e.NewTextValue))
+            {
+                _vm.ApplySearchBar(e.NewTextValue);
+            }
+
         }
     }
 }

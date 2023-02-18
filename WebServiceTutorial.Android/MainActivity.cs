@@ -41,5 +41,7 @@ namespace CryptOverseeMobileApp.Droid
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
+
     }
 }

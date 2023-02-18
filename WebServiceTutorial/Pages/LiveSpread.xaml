@@ -27,11 +27,7 @@
         </StackLayout>
 
 
-
-            <!--<Button Text="Get Spread Data for HNT/USDT 2" Command="{Binding ButtonSelectedCommand}" />-->
-            <!--<Button Text="Clear test" Command="{Binding ButtonClearSelectedCommand}" />-->
-
-            <SearchBar x:Name="searchBar" TextColor="Black" TextChanged="SearchBar_OnTextChanged"
+            <SearchBar x:Name="searchBar" TextColor="Black" TextChanged="SearchBar_OnTextChanged" BackgroundColor="Transparent"
                        SearchCommand="{Binding PerformSearch}" Placeholder="Search"
                        SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}"/>
 
@@ -42,49 +38,57 @@
                 <Label Text="{Binding NumberResultsRaw.Value, StringFormat='({0:F0} markets in total)'}" TextColor="Gray" FontSize="Default"  />
             </StackLayout>
 
-            <!--<StackLayout Orientation="Horizontal">
-                <Label Text="Buy on" TextColor="Silver" FontSize="Small" />
-                <Label Text="BinanceUS" FontSize="Medium" />
-                <Label Text=" Sell on" TextColor="Silver" FontSize="Small" />
-                <Label Text="Binance" FontSize="Medium" />
-            </StackLayout>-->
 
             <RefreshView IsRefreshing="{Binding IsRefreshing.Value}" Command="{Binding RefreshCommand}" >
                 <CollectionView ItemsSource="{Binding Spreads.Value}" SelectionMode="Single" ItemsUpdatingScrollMode="KeepLastItemInView" >
                     <CollectionView.ItemTemplate>
                         <DataTemplate>
-                            <StackLayout Orientation="Vertical" Margin="0,5,0,0" HorizontalOptions="FillAndExpand">
+                            <StackLayout Orientation="Vertical" Margin="0,5,0,0" HorizontalOptions="Center">
                                 <Frame Margin="1" Padding="0" CornerRadius="0" HorizontalOptions="FillAndExpand" BorderColor="Transparent"  BackgroundColor="Transparent">
                                     <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.DisplayLiveSpreadPopupCommand, Source={x:Reference LiveSpreadPageName}}"
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.DisplayLiveSpreadDetailsPage, Source={x:Reference LiveSpreadPageName}}"
                                                               CommandParameter="{Binding}" NumberOfTapsRequired="1" />
                                 </Frame.GestureRecognizers>
-                                    <StackLayout Orientation="Vertical">
+                                    <StackLayout Orientation="Vertical" BackgroundColor="Transparent" >
 
-                                            <StackLayout Orientation="Horizontal"  VerticalOptions="Center">
-                                                <StackLayout Orientation="Vertical" BackgroundColor="Transparent">
-                                                    <Label Text="{Binding Symbol}" TextColor="Black" FontSize="Large" HorizontalOptions="Center" />
-                                                    <Label Text="{Binding SpreadValue, StringFormat='{0:F2}%'}" TextColor="Gray" FontSize="Body" HorizontalOptions="Center" Margin="0,-10,0,0" />
-                                                </StackLayout>
+                                        <Grid >
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"  />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"  />
+                                            </Grid.RowDefinitions>
 
-                                                <StackLayout Orientation="Vertical" BackgroundColor="Transparent" VerticalOptions="Center">
-                                                    <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Start">
-                                                        <Label Text="Buy on:" TextColor="Silver" FontSize="Caption" VerticalOptions="Center" />
-                                                        <Label Text="{Binding BuyOn}" TextColor="Gray" FontSize="Default" VerticalOptions="Center" />
-                                                        <Label Text="Sell on:" TextColor="Silver" FontSize="Caption" VerticalOptions="Center" />
-                                                        <Label Text="{Binding SellOn}" TextColor="Gray" FontSize="Default" VerticalOptions="Center"/>
-                                                    </StackLayout>
-                                                    <StackLayout Orientation="Horizontal" VerticalOptions="Center" HorizontalOptions="Start" Margin="0,-5,0,0">
-                                                        <Label Text="Volume:" TextColor="Silver" FontSize="Caption" VerticalOptions="Center" />
-                                                        <Label Text="{Binding VolumeInQuoteCcy, StringFormat='{0:F4}'}"  TextColor="Gray" FontSize="Default" VerticalOptions="Center" />
-                                                    <Label Text="{Binding QuoteCurrency}"  TextColor="Silver" FontSize="Caption" VerticalOptions="Center" />
-                                                    </StackLayout>
-
-                                                </StackLayout>
-
-
+                                            <StackLayout Spacing="0" Padding="10,0" Grid.Column="0" Orientation="Vertical" BackgroundColor="Transparent" HorizontalOptions="Start" >
+                                                <Label Text="{Binding BuyOn}" TextColor="Gray" FontSize="Default" HorizontalOptions="Center" />
+                                                <Label Text="BUY" TextColor="DarkOrange" FontSize="Caption" FontAttributes="Bold"  HorizontalOptions="Center" />
+                                                <Label  Text="{Binding BuyPrice}" TextColor="DarkOrange" FontSize="Caption" HorizontalOptions="Center" />
                                             </StackLayout>
 
+
+                                            <Grid Grid.Column="1" BackgroundColor="Transparent" RowSpacing="0" VerticalOptions="Center">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"  />
+                                                    <RowDefinition Height="Auto"  />
+                                                </Grid.RowDefinitions>
+                                                <Label Grid.Row="0" Text="{Binding Symbol}" BackgroundColor="Transparent" TextColor="Black" FontSize="Body" FontAttributes="Bold" HorizontalOptions="Center" />
+                                                <StackLayout Grid.Row="1" Orientation="Horizontal" HorizontalOptions="Center">
+                                                    <Image Source="warning2.png" IsVisible="{Binding HasWarning}" HeightRequest="17"/>
+                                                    <Label BackgroundColor="Transparent" Text="{Binding SpreadValue, StringFormat='{0:F2}%'}" TextColor="Gray" FontSize="Body" HorizontalOptions="Center"  />
+                                                </StackLayout>
+
+                                            </Grid>
+
+
+                                            <StackLayout Spacing="0" Padding="10,0" Margin="0" Grid.Column="2" Orientation="Vertical" BackgroundColor="Transparent" HorizontalOptions="EndAndExpand" >
+                                                <Label Text="{Binding SellOn}" TextColor="Gray" FontSize="Default" HorizontalOptions="Center" />
+                                                <Label Text="SELL" TextColor="MediumAquamarine" FontSize="Caption" FontAttributes="Bold" HorizontalOptions="Center" />
+                                                <Label Text="{Binding SellPrice}" TextColor="MediumAquamarine" FontSize="Caption" HorizontalOptions="Center" />
+                                            </StackLayout>
+                                        </Grid>
+                                        
 
                                         <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End"/>
                                     </StackLayout>

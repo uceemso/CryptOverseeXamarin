@@ -30,6 +30,11 @@
             </StackLayout>
 
             <StackLayout Orientation="Horizontal">
+                <Label Text="Last update" TextColor="Gray" FontSize="Default" />
+                <Label Text="{Binding LastUpdate.Value, StringFormat='{0:ddMMMyyyy HH:mm:ss}'}" TextColor="Gray" FontSize="Default" />
+            </StackLayout>
+
+            <StackLayout Orientation="Horizontal">
                 <Label Text="Found" TextColor="Gray" FontSize="Default" />
                 <Label Text="{Binding NumberResultsAfterFiltering.Value, StringFormat='{0:F0} '}" TextColor="Gray" FontSize="Default"  />
                 <Label Text="markets" TextColor="Gray" FontSize="Default" />
@@ -53,14 +58,6 @@
                                     <StackLayout Orientation="Vertical">
                                         <StackLayout Orientation="Vertical">
 
-                                            <!--<StackLayout Orientation="Horizontal">
-                                        <Label Text="{Binding Symbol}" TextColor="Gray" FontSize="Large" />
-                                        <Label Text="Buy on:" TextColor="Silver" FontSize="Small" Margin="0, 7, 0, 0" />
-                                        <Label Text="{Binding BuyOn}" TextColor="Gray" FontSize="Default" Margin="0,7,0,0"/>
-                                        <Label Text="Sell on:" TextColor="Silver" FontSize="Small" Margin="0, 7, 0, 0" />
-                                        <Label Text="{Binding SellOn}" TextColor="Gray" FontSize="Default" Margin="0,7,0,0"/>
-                                    </StackLayout>-->
-
                                             <StackLayout Orientation="Horizontal" VerticalOptions="Center">
                                                 <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="Center">
                                                     <Label Text="{Binding BaseCurrency}" TextColor="Black" FontSize="Large" VerticalOptions="Center" />
@@ -68,16 +65,6 @@
                                                     <Label Text="{Binding QuoteCurrency, StringFormat='{0:F2}'}" TextColor="Gray" FontSize="Body" VerticalOptions="Center" />
                                                 </StackLayout>
 
-                                                <!--<StackLayout Orientation="Horizontal" HorizontalOptions="End" WidthRequest="150">
-                                            <StackLayout Orientation="Vertical">
-                                                <Label Text="Buy on:" TextColor="Silver" FontSize="Caption" Margin="0" />
-                                                <Label Text="{Binding BuyOn}" TextColor="Gray" FontSize="Default" Margin="0,-7,0,0"/>
-                                            </StackLayout>
-                                            <StackLayout Orientation="Vertical" Margin="10,0,0,0">
-                                                <Label Text="Sell on:" TextColor="Silver" FontSize="Caption" Margin="0" />
-                                                <Label Text="{Binding SellOn}" TextColor="Gray" FontSize="Default" Margin="0,-7,0,0"/>
-                                            </StackLayout>
-                                        </StackLayout>-->
                                                 <StackLayout Orientation="Horizontal" VerticalOptions="Center">
                                                     <Label Text="Buy on:" TextColor="Silver" FontSize="Caption" VerticalOptions="Center" />
                                                     <Label Text="{Binding BuyOn}" TextColor="Gray" FontSize="Default" VerticalOptions="Center" />
@@ -95,15 +82,7 @@
                                                     <Label Text="Max." TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
                                                     <Label Text="{Binding MaxSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Default"/>
                                                 </StackLayout>
-                                                <!--<StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
-                                            <Label Text="Spd higher than" TextColor="Silver" FontSize="Small" />
-                                            <Label Text="{Binding Path=BindingContext.MinAverageSpread, Source={x:Reference HistoricalSpreadPageName}, StringFormat='{0:F1} % '}" 
-                                                   TextColor="Gray" FontSize="Small" />
-                                            <Label Text="about" TextColor="Silver" FontSize="Small" />
-                                            <Label Text="{Binding SpreadOccurence, StringFormat='{0:F0} %'}" 
-                                                   TextColor="Gray" FontSize="Small" />
-                                            <Label Text="of the time" TextColor="Silver" FontSize="Small" />
-                                        </StackLayout>-->
+
                                                 <StackLayout Orientation="Horizontal" Margin="0, -5, 0, 0">
                                                     <Label Text="Spd higher than" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
                                                     <Label Text="{Binding Path=BindingContext.MinAverageSpread, Source={x:Reference HistoricalSpreadPageName}, StringFormat='{0:F1} % '}" 
@@ -113,10 +92,6 @@
                                                    TextColor="Gray" FontSize="Default" />
                                                     <Label Text="of the time" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
                                                 </StackLayout>
-                                                <!--<StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">
-                                            <Label Text="Nber data points" TextColor="Silver" FontSize="Small"/>
-                                            <Label Text="{Binding NbDataPoints}" TextColor="Gray" FontSize="Small"/>
-                                        </StackLayout>-->
 
                                             </StackLayout>
                                         </StackLayout>

@@ -6,6 +6,18 @@ using System.Linq;
 
 namespace CryptOverseeMobileApp.Models
 {
+    public class SpreadPoint
+    {
+        public SpreadPoint(DateTime? date, decimal value)
+        {
+            Date = date;
+            Value = value;
+        }
+        public DateTime? Date { get; set; }
+        public decimal Value { get; set; }
+
+    }
+    
     public class HistoricalSpreadModel : ISpread
     {
         [JsonProperty("symbol")]
@@ -30,7 +42,8 @@ namespace CryptOverseeMobileApp.Models
         public int TotalNbDaysForTheseExchanges { get; set; }
 
         [JsonProperty("spreads")]
-        public List<double> Spreads { get; set; }
+        public List<SpreadPoint> Spreads { get; set; }
+
 
         //[JsonProperty("positiveSpreadOccurence")]
         //public int PositiveSpreadOccurence { get; set; }
@@ -50,6 +63,8 @@ namespace CryptOverseeMobileApp.Models
         [JsonProperty("maxSpreadValue")]
         public double MaxSpreadValue { get; set; }
 
+
+        public double Date { get; set; }
         public double SpreadOccurence { get; set; }
         public string BaseCurrency => Symbol.Split('/').First();
         public string QuoteCurrency => Symbol.Split('/').Last();
@@ -57,7 +72,7 @@ namespace CryptOverseeMobileApp.Models
 
         public double GetSpreadOccurence(double minSpread)
         {
-            var count = Spreads.Count(_ => _ > minSpread);
+            var count = Spreads.Count(_ => _.Value > (decimal)minSpread);
             var occurence = Math.Round(count / (double)NbBlanks * 100);
             return occurence;
         }

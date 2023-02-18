@@ -24,7 +24,7 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             DurationIsChecked48 = new ReactiveProperty<bool>();
             DurationIsChecked72 = new ReactiveProperty<bool>();
             DurationIsChecked168 = new ReactiveProperty<bool>();
-            NumberHours = new ReactiveProperty<int>(48);
+            NumberHours = new ReactiveProperty<int>(1);
 
             NumberHours.Subscribe(_ =>
             {

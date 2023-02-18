@@ -21,8 +21,9 @@ namespace CryptOverseeMobileApp.ViewModels
     {
         private readonly HistoricalSettingsContentPage _settingPopup;
         private readonly HistoricalSettingsViewModel _settingViewModel;
-        //private MyPopupPageViewModel _popupViewModel;
-        
+        private HistoricalSpreadsDetails _historicalSpreadDetails;
+
+
         readonly RestService _restService;
         private List<HistoricalSpreadModel> _unfilteredSpreads = new();
         private Dictionary<int,List<HistoricalSpreadModel>> _unfilteredSpreadsDic = new();
@@ -32,6 +33,9 @@ namespace CryptOverseeMobileApp.ViewModels
         public HistoricalSpreadsViewModel()
         {
             InitialiseReactiveProperties();
+
+            _historicalSpreadDetails = new HistoricalSpreadsDetails();
+
 
             _settingViewModel = new HistoricalSettingsViewModel();
             _settingPopup = new HistoricalSettingsContentPage(_settingViewModel);
@@ -47,6 +51,7 @@ namespace CryptOverseeMobileApp.ViewModels
         {
             Spreads = new ReactiveProperty<ObservableCollection<HistoricalSpreadModel>>(new ObservableCollection<HistoricalSpreadModel>());
 
+            LastUpdate = new ReactiveProperty<DateTime>();
             SelectedSpread = new ReactiveProperty<HistoricalSpreadModel>();
             SelectedSpread.Where(_ => _ != null).Subscribe(newValue =>
             {
@@ -66,8 +71,10 @@ namespace CryptOverseeMobileApp.ViewModels
         public ReactiveProperty<bool> IsRefreshing { get; set; }
         public ReactiveProperty<ObservableCollection<HistoricalSpreadModel>> Spreads { get; set; }
         public ReactiveProperty<HistoricalSpreadModel> SelectedSpread { get; set; }
+        public ReactiveProperty<DateTime> LastUpdate { get; set; }
 
-        public ICommand RefreshHistSpreadCommand { get { return new Command(_ => RefreshData()); } }
+
+        public ICommand RefreshHistSpreadCommand => new Command(_ => RefreshData());
 
         //public Command SelectedTagChanged
         //{
@@ -83,15 +90,17 @@ namespace CryptOverseeMobileApp.ViewModels
                     try
                     {
                         var item = (HistoricalSpreadModel)selectedItem;
-                        var vm = new MyPopupPageViewModel();
-                        //vm.Symbol = item.Symbol;
-                        //vm.HistSpread = item;
-                        //vm.MinAverageSpread = MinAverageSpread;
-                        //var exchangeA = (SupportedExchangeName) Enum.Parse(typeof(SupportedExchangeName), item.BuyOn);
-                        //var exchangeB = (SupportedExchangeName) Enum.Parse(typeof(SupportedExchangeName), item.SellOn);
-                        //vm.RefreshSpread(exchangeA, exchangeB, item.BaseCurrency, item.QuoteCurrency);
-                        vm.RefreshSpread(item);
-                        await Navigation.PushPopupAsync(new MyPopupPage(vm));
+                        //var vm = new MyPopupPageViewModel();
+
+
+
+                        _historicalSpreadDetails.HistoricalSpreadModel = item;
+                        _historicalSpreadDetails.HistoricalSettingsViewModel = _settingViewModel;
+
+                        await Navigation.PushAsync(_historicalSpreadDetails);
+
+                        //vm.RefreshSpread(item);
+                        //await Navigation.PushPopupAsync(new MyPopupPage(vm));
 
 
                     }
@@ -103,15 +112,37 @@ namespace CryptOverseeMobileApp.ViewModels
             }
         }
 
-        public void RefreshData()
+        public async Task RefreshData()
         {
             try
             {
+                IsRefreshing.Value = true;
                 var stopwatch = Stopwatch.StartNew();
+                var historicalSpreadsOneHour = await _restService.GetHistoricalSpreadsFromFileShare();
+
+
+                //var spreads1 = _restService.GetHistoricalSpreadsAsync(1);
+                //var spreads24 = _restService.GetHistoricalSpreadsAsync(24);
+                //await Task.WhenAll(new List<Task>() {spreads1, spreads24});
+                //_unfilteredSpreadsDic[1] = spreads1.Result;
+                //_unfilteredSpreadsDic[24] = spreads24.Result;
+
+                _unfilteredSpreadsDic[1] = historicalSpreadsOneHour.Data;
+                LastUpdate.Value = historicalSpreadsOneHour.DateTime;
+
+                stopwatch.Stop();
+                Console.WriteLine($"Get data took {stopwatch.ElapsedMilliseconds} ms");
+
+                // _unfilteredSpreads = await _restService.GetHistoricalSpreadsAsync(_settingViewModel.NumberHours.Value);
+                _unfilteredSpreads = _unfilteredSpreadsDic[_settingViewModel.NumberHours.Value];
+
+                var stopwatch2 = Stopwatch.StartNew();
                 IsRefreshing.Value = true;
 
+                var nberHours = _settingViewModel.NumberHours.Value;
 
-                _unfilteredSpreads = _unfilteredSpreadsDic[_settingViewModel.NumberHours.Value];
+
+                _unfilteredSpreads = _unfilteredSpreadsDic[nberHours];
                 _settingViewModel.InitialiseSettings(new List<ISpread>(_unfilteredSpreads));
                 NumberResultsRaw.Value = _unfilteredSpreads.Count;
 
@@ -126,7 +157,7 @@ namespace CryptOverseeMobileApp.ViewModels
                 NumberResultsAfterFiltering.Value = filteredSpreads.Count;
 
                 stopwatch.Stop();
-                Console.WriteLine($"HistoricalSpread - Refreshed data in {stopwatch.ElapsedMilliseconds} ms");
+                Console.WriteLine($"HistoricalSpread - Refreshed data in {stopwatch2.ElapsedMilliseconds} ms");
 
                 if (!_settingViewModel.ExchangesVM.Values.Value.Any())
                 {
@@ -150,29 +181,25 @@ namespace CryptOverseeMobileApp.ViewModels
             {
                 try
                 {
-                    IsRefreshing.Value = true;
-                    var hours = new List<int> {1, 24, 48, 72, 168};
-                    var stopwatch = Stopwatch.StartNew();
-                    var spreads1 = _restService.GetHistoricalSpreadsAsync(1);
-                    //var spreads24 = _restService.GetHistoricalSpreadsAsync(24);
-                    var spreads48 = _restService.GetHistoricalSpreadsAsync(48);
-                    //var spreads72 = _restService.GetHistoricalSpreadsAsync(72);
-                    //var spreads168 = _restService.GetHistoricalSpreadsAsync(168);
+                    //IsRefreshing.Value = true;
+                    //var stopwatch = Stopwatch.StartNew();
+                    //var historicalSpreadsOneHour = await _restService.GetHistoricalSpreadsFromFileShare();
 
-                    //await Task.WhenAll(new List<Task>() {spreads1, spreads24, spreads48, spreads72, spreads168});
-                    await Task.WhenAll(new List<Task>() {spreads1, spreads48});
 
-                    _unfilteredSpreadsDic[1] = spreads1.Result;
-                    //_unfilteredSpreadsDic[24] = spreads24.Result;
-                    _unfilteredSpreadsDic[48] = spreads48.Result;
-                    //_unfilteredSpreadsDic[72] = spreads72.Result;
-                    //_unfilteredSpreadsDic[168] = spreads168.Result;
+                    ////var spreads1 = _restService.GetHistoricalSpreadsAsync(1);
+                    ////var spreads24 = _restService.GetHistoricalSpreadsAsync(24);
+                    ////await Task.WhenAll(new List<Task>() {spreads1, spreads24});
+                    ////_unfilteredSpreadsDic[1] = spreads1.Result;
+                    ////_unfilteredSpreadsDic[24] = spreads24.Result;
 
-                    stopwatch.Stop();
-                    Console.WriteLine($"Get data took {stopwatch.ElapsedMilliseconds} ms");
+                    //_unfilteredSpreadsDic[1] = historicalSpreadsOneHour.Data;
 
-                    // _unfilteredSpreads = await _restService.GetHistoricalSpreadsAsync(_settingViewModel.NumberHours.Value);
-                    _unfilteredSpreads = _unfilteredSpreadsDic[_settingViewModel.NumberHours.Value];
+
+                    //stopwatch.Stop();
+                    //Console.WriteLine($"Get data took {stopwatch.ElapsedMilliseconds} ms");
+
+                    //// _unfilteredSpreads = await _restService.GetHistoricalSpreadsAsync(_settingViewModel.NumberHours.Value);
+                    //_unfilteredSpreads = _unfilteredSpreadsDic[_settingViewModel.NumberHours.Value];
 
 
                     RefreshData();

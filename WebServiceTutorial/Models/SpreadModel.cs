@@ -33,9 +33,17 @@ namespace CryptOverseeMobileApp.Models
         [JsonProperty("spot")]
         public double Spot { get; set; }
 
+        [JsonProperty("buyPrice")]
+        public double BuyPrice { get; set; }
+
+        [JsonProperty("sellPrice")]
+        public double SellPrice { get; set; }
+
         public string BaseCurrency => Symbol.Split('/').First();
         public string QuoteCurrency => Symbol.Split('/').Last();
 
+        public string Warning { get; set; }
+        public bool HasWarning { get; set; }
 
         public override string ToString()
         {

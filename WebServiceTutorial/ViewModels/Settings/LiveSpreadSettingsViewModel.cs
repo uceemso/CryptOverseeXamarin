@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using CryptOverseeMobileApp.Models;
 using Reactive.Bindings;
@@ -20,6 +21,7 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             MarketsVM = new ObjectSelectorViewModel();
             MinAverageSpreadRounded = new ReactiveProperty<double>(0.5);
             MinAverageSpread = new ReactiveProperty<double>(0.5);
+            PremiumMembership = new ReactiveProperty<bool>();
 
             MinAverageSpread
                 .Throttle(TimeSpan.FromMilliseconds(20))
@@ -29,11 +31,14 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
                 });
         }
 
+        public ReactiveProperty<bool> PremiumMembership { get; set; }
         public ReactiveProperty<double> MinAverageSpread { get; set; }
         public ReactiveProperty<double> MinAverageSpreadRounded { get; set; }
 
         public ObjectSelectorViewModel ExchangesVM { get; set; }
         public ObjectSelectorViewModel MarketsVM { get; set; }
+        public ICommand PurchaseCommand => new Command(x => { Purchase(); });
+        public ICommand CheckPurchasesCommand => new Command(x => { CheckPurchase(); });
 
         public void InitialiseSettings(List<SpreadModel> spreads)
         {
@@ -87,6 +92,26 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
                 });
             }
         }
+
+     
+        
+        private async Task Purchase()
+        {
+            var purchased = await PurchasesHelper.PurchaseItem(PurchasesHelper.ProductCode);
+            if (purchased)
+            {
+                CheckPurchase();
+            }
+
+
+        }
+
+        private async Task CheckPurchase()
+        {
+            var premium = await PurchasesHelper.WasItemPurchased(PurchasesHelper.ProductCode);
+            PremiumMembership.Value = premium;
+        }
+
 
     }
 
