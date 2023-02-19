@@ -48,14 +48,14 @@
             <Label Text="Set Exchanges preferences" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" />
 
             <StackLayout >
-                <FlexLayout BindableLayout.ItemsSource="{Binding ExchangesVM.Values.Value}"  Wrap="Wrap" >
+                <FlexLayout BindableLayout.ItemsSource="{Binding AvailableExchanges.Values.Value}"  Wrap="Wrap" >
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="2" HeightRequest="30" >
                                 <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DodgerBlue" BorderColor="Transparent"  VerticalOptions="Start"
                                        IsVisible="{Binding Enabled}">
                                     <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference LiveSpreadSettingsName}}"
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.TapOnElement, Source={x:Reference LiveSpreadSettingsName}}"
                                                               CommandParameter="{Binding}" NumberOfTapsRequired="1" />
                                     </Frame.GestureRecognizers>
                                     <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>
@@ -63,7 +63,7 @@
                                 <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DarkGray" BorderColor="Transparent" VerticalOptions="Start"
                                        IsVisible="{Binding Enabled, Converter={StaticResource InverseBoolConverter}}">
                                     <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference LiveSpreadSettingsName}}"
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.TapOnElement, Source={x:Reference LiveSpreadSettingsName}}"
                                                               CommandParameter="{Binding}" NumberOfTapsRequired="1" />
                                     </Frame.GestureRecognizers>
                                     <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>
@@ -80,14 +80,14 @@
             <Label Text="Set Markets preferences" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" />
 
             <StackLayout >
-                <FlexLayout BindableLayout.ItemsSource="{Binding MarketsVM.Values.Value}"  Wrap="Wrap" >
+                <FlexLayout BindableLayout.ItemsSource="{Binding AvailableMarkets.Values.Value}"  Wrap="Wrap" >
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="2" HeightRequest="30" >
                                 <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DodgerBlue" BorderColor="Transparent"  VerticalOptions="Start"
                                        IsVisible="{Binding Enabled}">
                                     <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference LiveSpreadSettingsName}}"
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.TapOnElement, Source={x:Reference LiveSpreadSettingsName}}"
                                                               CommandParameter="{Binding}" NumberOfTapsRequired="1" />
                                     </Frame.GestureRecognizers>
                                     <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>
@@ -95,7 +95,7 @@
                                 <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DarkGray" BorderColor="Transparent" VerticalOptions="Start"
                                        IsVisible="{Binding Enabled, Converter={StaticResource InverseBoolConverter}}">
                                     <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference LiveSpreadSettingsName}}"
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.TapOnElement, Source={x:Reference LiveSpreadSettingsName}}"
                                                               CommandParameter="{Binding}" NumberOfTapsRequired="1" />
                                     </Frame.GestureRecognizers>
                                     <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>

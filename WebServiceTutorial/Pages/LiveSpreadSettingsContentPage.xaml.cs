@@ -25,7 +25,7 @@ namespace CryptOverseeMobileApp.Pages
 
         protected override void OnAppearing()
         {
-            foreach (var value in _viewmodel.ExchangesVM.Values.Value)
+            foreach (var value in _viewmodel.AvailableExchanges.Values.Value)
             {
                 value.AllowedToSavePreference = true;
             }
@@ -39,7 +39,7 @@ namespace CryptOverseeMobileApp.Pages
 
         protected override void OnDisappearing()
         {
-            foreach (var value in _viewmodel.ExchangesVM.Values.Value)
+            foreach (var value in _viewmodel.AvailableExchanges.Values.Value)
             {
                 value.AllowedToSavePreference = false;
             }

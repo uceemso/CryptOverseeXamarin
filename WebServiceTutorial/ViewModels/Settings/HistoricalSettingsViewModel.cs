@@ -56,7 +56,7 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
 
         public override void InitialiseSettings(List<ISpread> spreads)
         {
-            InitialiseSettingsWithKey(spreads, HIST_EXCHANGES, null);
+            InitialiseSettingsWithKey(spreads, HIST_EXCHANGES);
         }
 
         public IEnumerable<HistoricalSpreadModel> ApplySettings(IEnumerable<HistoricalSpreadModel> spreads)
@@ -65,7 +65,7 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             {
                 var filteredSpreads = spreads.
                     Where(_ => _.GetSpreadOccurence(MinAverageSpread.Value) >= MinOccurence.Value &&
-                               SettingsHelper.ShouldDisplayBasedOnExchangeSettings(ExchangesVM.GetValues(), _.SellOn, _.BuyOn)
+                               SettingsHelper.ShouldDisplayBasedOnExchangeSettings(ExchangesVM, _)
                         // && ShouldDisplayMarket(_.Symbol)
                     );
 
@@ -85,7 +85,7 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
                 {
                     try
                     {
-                        var item = (SettingItemViewModel) selectedItem;
+                        var item = (Element) selectedItem;
                         item.Toggle();
                     }
                     catch (Exception ex)

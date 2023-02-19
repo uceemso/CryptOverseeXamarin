@@ -17,8 +17,8 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
 
         public LiveSpreadSettingsViewModel()
         {
-            ExchangesVM = new ObjectSelectorViewModel();
-            MarketsVM = new ObjectSelectorViewModel();
+            AvailableExchanges = new ElementCollection();
+            AvailableMarkets = new ElementCollection();
             MinAverageSpreadRounded = new ReactiveProperty<double>(0.5);
             MinAverageSpread = new ReactiveProperty<double>(0.5);
             PremiumMembership = new ReactiveProperty<bool>();
@@ -35,46 +35,26 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
         public ReactiveProperty<double> MinAverageSpread { get; set; }
         public ReactiveProperty<double> MinAverageSpreadRounded { get; set; }
 
-        public ObjectSelectorViewModel ExchangesVM { get; set; }
-        public ObjectSelectorViewModel MarketsVM { get; set; }
+        public ElementCollection AvailableExchanges { get; set; }
+        public ElementCollection AvailableMarkets { get; set; }
         public ICommand PurchaseCommand => new Command(x => { Purchase(); });
         public ICommand CheckPurchasesCommand => new Command(x => { CheckPurchase(); });
 
         public void InitialiseSettings(List<SpreadModel> spreads)
         {
-            if (!ExchangesVM.GetValues().Any())
+            if (AvailableExchanges.IsEmpty())
             {
-                var exchanges = SettingsHelper.GetDistinctExchanges(spreads);
-                var x = exchanges.Select(_ => new SettingItemViewModel(LIVE_EXCHANGES, _)).OrderBy(_ => _.Name);
-                ExchangesVM.UpdateMarkets(x);
+                var x = SettingsHelper.GetExchangeElementList(spreads, LIVE_EXCHANGES);
+                AvailableExchanges.SetValues(x);
             }
-            if (!MarketsVM.GetValues().Any())
+            if (AvailableMarkets.IsEmpty())
             {
-                var quoteCcies = spreads.Select(_ => _.Symbol.Split('/')[1]).Distinct().ToList();
-                var x = quoteCcies.Select(_ => new SettingItemViewModel(LIVE_MARKETS, _)).OrderBy(_ => _.Name);
-                MarketsVM.UpdateMarkets(x);
+                var x = SettingsHelper.GetMarketElementList(spreads, LIVE_MARKETS);
+                AvailableMarkets.SetValues(x);
             }
         }
 
-        public IEnumerable<SpreadModel> ApplySettings(IEnumerable<SpreadModel> spreads)
-        {
-            try
-            {
-                var filteredSpreads = spreads.Where(_ => _.SpreadValue > MinAverageSpread.Value
-                                                         && SettingsHelper.ShouldDisplayBasedOnExchangeSettings(ExchangesVM.GetValues(), _.SellOn, _.BuyOn)
-                                                         && SettingsHelper.ShouldDisplayBaseOnMarketSetting(MarketsVM.GetValues(), _.Symbol));
-
-                //filteredSpreads = filteredSpreads.OrderByDescending(_ => _.SpreadValue).ToList();
-                return filteredSpreads;
-            } catch (Exception ex)
-            {
-                return null;
-            }
-            
-
-        }
-
-        public ICommand SelectedPictureChangedCommand
+        public ICommand TapOnElement
         {
             get
             {
@@ -82,7 +62,7 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
                 {
                     try
                     {
-                        var item = (SettingItemViewModel) selectedItem;
+                        var item = (Element) selectedItem;
                         item.Toggle();
                     }
                     catch (Exception ex)

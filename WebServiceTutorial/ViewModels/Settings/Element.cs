@@ -7,22 +7,22 @@ using static System.Boolean;
 namespace CryptOverseeMobileApp.ViewModels.Settings
 {
 
-    public class SettingItemViewModel : ViewModelBase
+    public class Element : ViewModelBase
     {
         private bool _enabled;
+        private readonly string _key;
 
-        public SettingItemViewModel(string pageName, string exchange)
+        public Element(string pageName, string exchange)
         {
-            PageName = pageName;
             Name = exchange.Trim();
             AllowedToSavePreference = true;
-                
-            var key = Key;
-            TryParse(Preferences.Get(key, "True"), out var enabled);
+
+            _key = $"{pageName}_{Name}";
+            TryParse(Preferences.Get(_key, "True"), out var enabled);
             Enabled = enabled;
         }
 
-        public string PageName { get; set; }
+        public bool PremiumMembership { get; set; }
         public string Name { get; set; }
         public bool AllowedToSavePreference { get; set; }
 
@@ -36,28 +36,26 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             }
         }
 
-        private string Key => $"{PageName}_{Name}";
-
         public ICommand SavePreferencesCommand => new Command(x => { SavePrefs(); });
 
         public void SavePrefs()
         {
             if (!AllowedToSavePreference) return;
-            Preferences.Set(Key, Enabled.ToString());
-            Console.WriteLine($"Saved preference to {Enabled} for key {Key}");
+            Preferences.Set(_key, Enabled.ToString());
+            Console.WriteLine($"Saved preference to {Enabled} for key {_key}");
         }
 
         public void Toggle()
         {
             if (!AllowedToSavePreference) return;
             Enabled = !Enabled;
-            Preferences.Set(Key, Enabled.ToString());
-            Console.WriteLine($"Saved preference to {Enabled} for key {Key}");
+            Preferences.Set(_key, Enabled.ToString());
+            Console.WriteLine($"Saved preference to {Enabled} for key {_key}");
         }
 
         public override string ToString()
         {
-            return $"{Name} Enabled: {Enabled}, {PageName}";
+            return $"{_key} Enabled: {Enabled}";
         }
     }
 }

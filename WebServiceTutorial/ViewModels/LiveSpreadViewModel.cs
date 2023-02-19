@@ -22,7 +22,6 @@ namespace CryptOverseeMobileApp.ViewModels
         private readonly LiveSpreadDetails _liveSpreadDetails;
         private bool _premiumMembership;
 
-        private bool _googlePlayConnected;
         private string _searchBar;
         private List<SpreadNote> _notes = new List<SpreadNote>();
         private List<SpreadModel> _unfilteredSpreads;
@@ -107,7 +106,7 @@ namespace CryptOverseeMobileApp.ViewModels
 
 
                 _settingViewModel.InitialiseSettings(_unfilteredSpreads);
-                _settingsFilteredSpreads = _settingViewModel.ApplySettings(_unfilteredSpreads).ToList();
+                _settingsFilteredSpreads = SettingsHelper.FilterSpreadsAccordingToSettings(_settingViewModel, _unfilteredSpreads);
 
                 ApplySearchBar(_searchBar);
                 
