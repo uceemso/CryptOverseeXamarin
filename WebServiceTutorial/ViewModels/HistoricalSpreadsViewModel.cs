@@ -159,7 +159,7 @@ namespace CryptOverseeMobileApp.ViewModels
                 stopwatch.Stop();
                 Console.WriteLine($"HistoricalSpread - Refreshed data in {stopwatch2.ElapsedMilliseconds} ms");
 
-                if (!_settingViewModel.ExchangesVM.Values.Value.Any())
+                if (_settingViewModel.ExchangesVM.IsEmpty())
                 {
                     _settingViewModel.InitialiseSettings(new List<ISpread>(_unfilteredSpreads));
                 }

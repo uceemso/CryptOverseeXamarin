@@ -30,28 +30,16 @@ namespace CryptOverseeMobileApp.Pages
 
         protected override void OnAppearing()
         {
-            foreach (var value in _viewmodel.ExchangesVM.Values.Value)
-            {
-                value.AllowedToSavePreference = true;
-            }
-            foreach (var value in _viewmodel.MarketsVM.Values.Value)
-            {
-                value.AllowedToSavePreference = true;
-            }
+            _viewmodel.ExchangesVM.SetAllowedToSavePreference(true);
+            _viewmodel.MarketsVM.SetAllowedToSavePreference(true);
 
             base.OnDisappearing();
         }
 
         protected override void OnDisappearing()
         {
-            foreach (var value in _viewmodel.ExchangesVM.Values.Value)
-            {
-                value.AllowedToSavePreference = false;
-            }
-            foreach (var value in _viewmodel.MarketsVM.Values.Value)
-            {
-                value.AllowedToSavePreference = false;
-            }
+            _viewmodel.ExchangesVM.SetAllowedToSavePreference(false);
+            _viewmodel.MarketsVM.SetAllowedToSavePreference(false);
 
             base.OnDisappearing();
         }

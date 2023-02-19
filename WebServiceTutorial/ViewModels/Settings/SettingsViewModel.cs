@@ -8,12 +8,12 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
     {
         public SettingsViewModel()
         {
-            MarketsVM = new ElementCollection();
-            ExchangesVM = new ElementCollection();
+            MarketsVM = new ReactiveList();
+            ExchangesVM = new ReactiveList();
         }
 
-        public ElementCollection MarketsVM { get; set; }
-        public ElementCollection ExchangesVM { get; set; }
+        public ReactiveList MarketsVM { get; set; }
+        public ReactiveList ExchangesVM { get; set; }
 
         public abstract void InitialiseSettings(List<ISpread> spreads);
 

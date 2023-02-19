@@ -8,7 +8,7 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
     public static class SettingsHelper
     {
         
-        public static bool ShouldDisplayBasedOnExchangeSettings(ElementCollection collection, ISpread spread)
+        public static bool ShouldDisplayBasedOnExchangeSettings(ReactiveList collection, ISpread spread)
         {
             var elements = collection.GetValues();
             var exchangeAEnabled = elements.FirstOrDefault(_ => _.Name == spread.BuyOn)?.Enabled;
@@ -30,7 +30,7 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             return symbolsAccepted.Contains(baseCcy) && symbolsAccepted.Contains(quoteCcy);
         }
 
-        public static bool ShouldDisplayBaseOnMarketSetting(ElementCollection collection, ISpread spread)
+        public static bool ShouldDisplayBaseOnMarketSetting(ReactiveList collection, ISpread spread)
         {
             var symbolsAccepted = collection.GetValues().Where(_ => _.Enabled).Select(_ => _.Name).ToList();
             return symbolsAccepted.Contains(spread.QuoteCurrency);

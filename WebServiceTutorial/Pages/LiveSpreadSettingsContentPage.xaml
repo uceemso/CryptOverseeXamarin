@@ -48,7 +48,7 @@
             <Label Text="Set Exchanges preferences" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" />
 
             <StackLayout >
-                <FlexLayout BindableLayout.ItemsSource="{Binding AvailableExchanges.Values.Value}"  Wrap="Wrap" >
+                <FlexLayout BindableLayout.ItemsSource="{Binding AvailableExchanges.ValuesForUI}"  Wrap="Wrap" >
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="2" HeightRequest="30" >
@@ -80,7 +80,7 @@
             <Label Text="Set Markets preferences" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" />
 
             <StackLayout >
-                <FlexLayout BindableLayout.ItemsSource="{Binding AvailableMarkets.Values.Value}"  Wrap="Wrap" >
+                <FlexLayout BindableLayout.ItemsSource="{Binding AvailableMarkets.ValuesForUI}"  Wrap="Wrap" >
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
                             <Grid Margin="2" HeightRequest="30" >

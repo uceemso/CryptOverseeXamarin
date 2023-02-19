@@ -17,8 +17,8 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
 
         public LiveSpreadSettingsViewModel()
         {
-            AvailableExchanges = new ElementCollection();
-            AvailableMarkets = new ElementCollection();
+            AvailableExchanges = new ReactiveList();
+            AvailableMarkets = new ReactiveList();
             MinAverageSpreadRounded = new ReactiveProperty<double>(0.5);
             MinAverageSpread = new ReactiveProperty<double>(0.5);
             PremiumMembership = new ReactiveProperty<bool>();
@@ -35,8 +35,8 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
         public ReactiveProperty<double> MinAverageSpread { get; set; }
         public ReactiveProperty<double> MinAverageSpreadRounded { get; set; }
 
-        public ElementCollection AvailableExchanges { get; set; }
-        public ElementCollection AvailableMarkets { get; set; }
+        public ReactiveList AvailableExchanges { get; set; }
+        public ReactiveList AvailableMarkets { get; set; }
         public ICommand PurchaseCommand => new Command(x => { Purchase(); });
         public ICommand CheckPurchasesCommand => new Command(x => { CheckPurchase(); });
 
