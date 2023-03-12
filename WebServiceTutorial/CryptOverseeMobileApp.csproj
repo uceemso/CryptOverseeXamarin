@@ -48,9 +48,6 @@
     <EmbeddedResource Update="Pages\HistoricalSpreads.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Pages\MyPopupPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="Pages\LiveSpread.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
@@ -73,9 +70,6 @@
   <ItemGroup>
     <Compile Update="Pages\LiveSpreadSettingsContentPage.xaml.cs">
       <DependentUpon>LiveSpreadSettingsContentPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Pages\MyPopupPage.xaml.cs">
-      <DependentUpon>MyPopupPage.xaml</DependentUpon>
     </Compile>
     <Compile Update="Pages\HistoricalSettingsContentPage.xaml.cs">
       <DependentUpon>HistoricalSettingsContentPage.xaml</DependentUpon>

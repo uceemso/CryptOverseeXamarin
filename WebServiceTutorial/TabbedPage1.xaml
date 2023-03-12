@@ -10,15 +10,15 @@
     <!--Pages can be added as references or inline-->
   <TabbedPage.Children>
 
-      <NavigationPage Title="Live Spreads" IconImageSource="{OnPlatform iOS=android.svg, Android=network.png}">
+      <NavigationPage Title="Live Spreads" IconImageSource="{OnPlatform iOS=android.svg, Android=network.png}" HasNavigationBar="True">
             <x:Arguments>
-                <mypages:LiveSpread />
+                <mypages:LiveSpread Title="CryptOversee - Live Spreads" />
             </x:Arguments>
         </NavigationPage>
 
-      <NavigationPage Title="Historical Spreads" IconImageSource="{OnPlatform iOS=android.svg, Android=network.png}">
+      <NavigationPage Title="Historical Spreads" IconImageSource="{OnPlatform iOS=android.svg, Android=history.png}">
             <x:Arguments>
-                <mypages:HistoricalSpreads />
+                <mypages:HistoricalSpreads Title="CryptOversee - Historical Spreads" />
 
             </x:Arguments>
         </NavigationPage>

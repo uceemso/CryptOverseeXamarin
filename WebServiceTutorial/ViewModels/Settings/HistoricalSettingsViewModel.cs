@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using CryptOverseeMobileApp.Models;
 using Reactive.Bindings;
@@ -9,7 +10,7 @@ using Xamarin.Forms;
 
 namespace CryptOverseeMobileApp.ViewModels.Settings
 {
-    public class HistoricalSettingsViewModel : SettingsViewModel, ISettings
+    public class HistoricalSettingsViewModel : SettingsViewModel
     {
         private const string HIST_EXCHANGES = "HIST_EXCHANGES";
         private const string HIST_MARKETS = "HIST_MARKETS";
@@ -20,19 +21,17 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             MinAverageSpread = new ReactiveProperty<double>(0.5);
             MinOccurence = new ReactiveProperty<double>(10);
             DurationIsChecked1 = new ReactiveProperty<bool>();
-            DurationIsChecked24 = new ReactiveProperty<bool>();
-            DurationIsChecked48 = new ReactiveProperty<bool>();
-            DurationIsChecked72 = new ReactiveProperty<bool>();
-            DurationIsChecked168 = new ReactiveProperty<bool>();
+            DurationIsChecked3 = new ReactiveProperty<bool>();
             NumberHours = new ReactiveProperty<int>(1);
+            AvailableExchanges = new ReactiveList();
+            AvailableMarkets = new ReactiveList();
+            PremiumMembership = new ReactiveProperty<bool>();
+
 
             NumberHours.Subscribe(_ =>
             {
                 DurationIsChecked1.Value = _ == 1;
-                DurationIsChecked24.Value = _ == 24;
-                DurationIsChecked48.Value = _ == 48;
-                DurationIsChecked72.Value = _ == 72;
-                DurationIsChecked168.Value = _ == 168;
+                DurationIsChecked3.Value = _ == 3;
             });
 
             MinAverageSpread
@@ -48,15 +47,21 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
         public ReactiveProperty<double> MinOccurence { get; set; }
         public ReactiveProperty<int> NumberHours { get; set; }
         public ReactiveProperty<bool> DurationIsChecked1 { get; set; }
-        public ReactiveProperty<bool> DurationIsChecked24 { get; set; }
-        public ReactiveProperty<bool> DurationIsChecked48 { get; set; }
-        public ReactiveProperty<bool> DurationIsChecked72 { get; set; }
-        public ReactiveProperty<bool> DurationIsChecked168 { get; set; }
+        public ReactiveProperty<bool> DurationIsChecked3 { get; set; }
 
+        //public ReactiveProperty<bool> PremiumMembership { get; set; }
+        public ReactiveList AvailableExchanges { get; set; }
+        public ReactiveList AvailableMarkets { get; set; }
+        public ICommand PurchaseCommand => new Command(x => { Purchase(); });
 
-        public override void InitialiseSettings(List<ISpread> spreads)
+        public void InitialiseSettings(List<ISpread> spreads)
         {
-            InitialiseSettingsWithKey(spreads, HIST_EXCHANGES);
+            //InitialiseSettingsWithKey(spreads, HIST_EXCHANGES);
+            if (AvailableExchanges.IsEmpty())
+            {
+                var x = SettingsHelper.GetExchangeElementList(spreads, HIST_EXCHANGES, PremiumMembership.Value);
+                AvailableExchanges.SetValues(x);
+            }
         }
 
         public IEnumerable<HistoricalSpreadModel> ApplySettings(IEnumerable<HistoricalSpreadModel> spreads)
@@ -65,7 +70,7 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             {
                 var filteredSpreads = spreads.
                     Where(_ => _.GetSpreadOccurence(MinAverageSpread.Value) >= MinOccurence.Value &&
-                               SettingsHelper.ShouldDisplayBasedOnExchangeSettings(ExchangesVM, _)
+                               SettingsHelper.ShouldDisplayBasedOnExchangeSettings(AvailableExchanges, _)
                         // && ShouldDisplayMarket(_.Symbol)
                     );
 
@@ -77,22 +82,30 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             }
         }
 
-        public ICommand SelectedPictureChangedCommand
-        {
-            get
-            {
-                return new Command(selectedItem =>
-                {
-                    try
-                    {
-                        var item = (Element) selectedItem;
-                        item.Toggle();
-                    }
-                    catch (Exception ex)
-                    {
+        //public ICommand TapOnExchangeElement =>
+        //    new Command(selectedItem =>
+        //    {
+        //        try
+        //        {
+        //            if (PremiumMembership.Value)
+        //            {
+        //                var item = (Element)selectedItem;
+        //                item.Toggle();
+        //            }
+        //        }
+        //        catch (Exception ex)
+        //        {
 
-                    }
-                });
+        //        }
+        //    });
+
+        private async Task Purchase()
+        {
+            var purchased = await PurchasesHelper.PurchaseItem(PurchasesHelper.ProductCode);
+            if (purchased)
+            {
+                var premium = await PurchasesHelper.WasItemPurchased(PurchasesHelper.ProductCode);
+                PremiumMembership.Value = premium;
             }
         }
 

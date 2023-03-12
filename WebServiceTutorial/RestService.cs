@@ -53,11 +53,11 @@ namespace CryptOverseeMobileApp
             }
         }
 
-        public async Task<ChocoExchangeResultHistoricalSpread> GetHistoricalSpreadsFromFileShare()
+        public async Task<ChocoExchangeResultHistoricalSpread> GetHistoricalSpreadsFromFileShare(int i)
         {
             try
             {
-                var line = await ChocoExchangesApi.Services.AzureHelpers.ReadFileToAzure("GetHistoricalSpreads_1.txt");
+                var line = await ChocoExchangesApi.Services.AzureHelpers.ReadFileToAzure($"GetHistoricalSpreads_{i}.txt");
                 var result = JObject.Parse(line).ToObject<ChocoExchangeResultHistoricalSpread>();
                 return result;
             }

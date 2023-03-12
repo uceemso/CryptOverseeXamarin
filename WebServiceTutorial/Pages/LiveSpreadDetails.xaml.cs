@@ -24,6 +24,7 @@ namespace CryptOverseeMobileApp.Pages
             InitializeComponent();
             _viewModel = new LiveSpreadDetailsViewModel();
             BindingContext = _viewModel;
+            Title = "Live Spreads - Details";
         }
 
         protected override void OnDisappearing()

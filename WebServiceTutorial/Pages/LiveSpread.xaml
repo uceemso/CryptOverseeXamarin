@@ -14,28 +14,24 @@
     <ContentPage.Content>
         <StackLayout Margin="10">
 
-            <StackLayout Orientation="Horizontal" >
-                <Label Margin="0,0,0,0" Text="Live Spreads" TextColor="Black" FontSize="Title"  />
-                <ImageButton Source="settings.png" HeightRequest="30" HorizontalOptions="EndAndExpand" BackgroundColor="Transparent"
+            <StackLayout Orientation="Horizontal" Margin="0,0,0,0" BackgroundColor="Transparent">
+                <!--<Label Margin="0,0,0,0" Text="Live Spreads" TextColor="Black" FontSize="Title"  />-->
+                <SearchBar x:Name="searchBar" TextColor="Black" TextChanged="SearchBar_OnTextChanged" BackgroundColor="Transparent"
+                           SearchCommand="{Binding PerformSearch}" Placeholder="Search" Margin="-10,0,0,0"
+                           SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}"/>
+                <ImageButton Source="settings.png" HeightRequest="40" HorizontalOptions="EndAndExpand" BackgroundColor="Transparent"
                              Command="{Binding NavigateToSettingsCommand}">
                 </ImageButton>
             </StackLayout>
 
-        <StackLayout Orientation="Horizontal">
-            <Label Text="Last update" TextColor="Gray" FontSize="Default" />
-                <Label Text="{Binding LastUpdate.Value, StringFormat='{0:ddMMMyyyy HH:mm:ss}'}" TextColor="Gray" FontSize="Default" />
-        </StackLayout>
-
-
-            <SearchBar x:Name="searchBar" TextColor="Black" TextChanged="SearchBar_OnTextChanged" BackgroundColor="Transparent"
-                       SearchCommand="{Binding PerformSearch}" Placeholder="Search"
-                       SearchCommandParameter="{Binding Text, Source={x:Reference searchBar}}"/>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="{Binding LastUpdate.Value, StringFormat='Last updated at {0:dd/MM/yy HH:mm tt}'}" TextColor="Gray" FontSize="Default" />
+            </StackLayout>
 
             <StackLayout Orientation="Horizontal">
-                <Label Text="Found" TextColor="Gray" FontSize="Default" />
-                <Label Text="{Binding NumberResultsAfterFiltering.Value, StringFormat='{0:F0} '}" TextColor="Gray" FontSize="Default"  />
-                <Label Text="markets" TextColor="Gray" FontSize="Default" />
-                <Label Text="{Binding NumberResultsRaw.Value, StringFormat='({0:F0} markets in total)'}" TextColor="Gray" FontSize="Default"  />
+                <Label Text="{Binding NumberResultsAfterFiltering.Value, StringFormat='Found {0:F0} '}" TextColor="Gray" FontSize="Default"  />
+                <Label Text="arbitrage opportunities" TextColor="Gray" FontSize="Default" />
+                <Label Text="{Binding NumberResultsRaw.Value, StringFormat='({0:F0} in total)'}" TextColor="Gray" FontSize="Default"  />
             </StackLayout>
 
 

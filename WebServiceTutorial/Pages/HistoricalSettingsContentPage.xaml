@@ -6,14 +6,14 @@
              xmlns:settings="clr-namespace:CryptOverseeMobileApp.ViewModels.Settings;assembly=CryptOverseeMobileApp"
              xmlns:b="clr-namespace:Xamarin.Forms.BehaviorsPack;assembly=Xamarin.Forms.BehaviorsPack"
              xmlns:converters="clr-namespace:CryptOverseeMobileApp.Converters;assembly=CryptOverseeMobileApp"
-
+             x:DataType="settings:HistoricalSettingsViewModel"
              x:Class="CryptOverseeMobileApp.Pages.HistoricalSettingsContentPage"
              NavigationPage.HasNavigationBar="true"
              x:Name="HistoricalSettingsName">
 
-    <ContentPage.BindingContext>
+    <!--<ContentPage.BindingContext>
         <settings:HistoricalSettingsViewModel/>
-    </ContentPage.BindingContext>
+    </ContentPage.BindingContext>-->
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
@@ -51,27 +51,24 @@
             </StackLayout>
             <FlexLayout Wrap="Wrap" RadioButtonGroup.GroupName="durations" RadioButtonGroup.SelectedValue="{Binding NumberHours.Value}" >
                 <RadioButton Content="1hr" Value="1" IsChecked="{Binding DurationIsChecked1.Value}" />
-                <RadioButton Content="24hrs" Value="24" IsChecked="{Binding DurationIsChecked24.Value}" />
-                <RadioButton Content="48hrs" Value="48" IsChecked="{Binding DurationIsChecked48.Value}" />
-                <RadioButton Content="3 days" Value="72" IsChecked="{Binding DurationIsChecked72.Value}" />
-                <RadioButton Content="7 days" Value="168" IsChecked="{Binding DurationIsChecked168.Value}"/>
+                <RadioButton Content="3hrs" Value="3" IsChecked="{Binding DurationIsChecked3.Value}" />
             </FlexLayout>
 
 
             <!-- Separator -->
                 <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End" Margin="0,0,0,10"/>
 
-                <Label Text="Set Exchanges preferences" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" />
+                <Label Text="Select Exchanges" FontSize="Medium" VerticalOptions="Start" HorizontalOptions="CenterAndExpand" />
 
             <StackLayout >
-                <FlexLayout BindableLayout.ItemsSource="{Binding ExchangesVM.Values.Value}"  Wrap="Wrap" >
+                <FlexLayout BindableLayout.ItemsSource="{Binding AvailableExchanges.ValuesForUI}"  Wrap="Wrap" >
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
-                            <Grid Margin="2" HeightRequest="30" >
+                            <Grid Margin="2" HeightRequest="30" x:DataType="settings:Element">
                                 <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DodgerBlue" BorderColor="Transparent"  VerticalOptions="Start"
                                        IsVisible="{Binding Enabled}">
                                     <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference HistoricalSettingsName}}"
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.TapOnExchangeElement, Source={x:Reference HistoricalSettingsName}}"
                                                               CommandParameter="{Binding}" NumberOfTapsRequired="1" />
                                     </Frame.GestureRecognizers>
                                     <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>
@@ -79,7 +76,7 @@
                                 <Frame Margin="1" Padding="10,5,10,5" CornerRadius="30" BackgroundColor="DarkGray" BorderColor="Transparent" VerticalOptions="Start"
                                        IsVisible="{Binding Enabled, Converter={StaticResource InverseBoolConverter}}">
                                     <Frame.GestureRecognizers>
-                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.SelectedPictureChangedCommand, Source={x:Reference HistoricalSettingsName}}"
+                                        <TapGestureRecognizer Command="{Binding Path=BindingContext.TapOnExchangeElement, Source={x:Reference HistoricalSettingsName}}"
                                                               CommandParameter="{Binding}" NumberOfTapsRequired="1" />
                                     </Frame.GestureRecognizers>
                                     <Label  Text="{Binding Name}" TextColor="Azure" FontSize="Default" HorizontalOptions="StartAndExpand"/>
@@ -89,16 +86,14 @@
                     </BindableLayout.ItemTemplate>
                 </FlexLayout>
             </StackLayout>
-            
-                <!--<views:ObjectSelectorTwoColView BindingContext="{Binding ExchangesVM}"/>-->
 
-            <!-- Separator -->
-                <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End" Margin="0,0,0,10"/>
+            <Button  Text="☆ GET PREMIUM SUBSCRIPTION ☆ &#x0a; To unlock all exchanges"  TextTransform="None" Command="{Binding PurchaseCommand}" TextColor="FloralWhite" BackgroundColor="Goldenrod" 
+                     Margin="0,10,0,0" IsVisible="{Binding PremiumMembership.Value, Converter={StaticResource InverseBoolConverter}}"/>
 
-                <!--<Label Text="Set Markets preferences" FontSize="Medium" VerticalOptions="Center" HorizontalOptions="CenterAndExpand" />
-                <views:ObjectSelectorThreeColView BindingContext="{Binding MarketsVM}"/>-->
+            <Label  Text="☆  You are a Premium Member !  ☆"  IsVisible="{Binding PremiumMembership.Value}"  Margin="0,10,0,0"
+                    TextColor="FloralWhite" BackgroundColor="Goldenrod" HeightRequest="50" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
 
-                <StackLayout.GestureRecognizers>
+            <StackLayout.GestureRecognizers>
                     <SwipeGestureRecognizer Direction="Down" Swiped="OnDismissButtonClicked"/>
                 </StackLayout.GestureRecognizers>
         </StackLayout>

@@ -69,6 +69,9 @@ namespace CryptOverseeMobileApp.Models
         public string BaseCurrency => Symbol.Split('/').First();
         public string QuoteCurrency => Symbol.Split('/').Last();
 
+        public string Warning { get; set; }
+        public bool HasWarning { get; set; }
+
 
         public double GetSpreadOccurence(double minSpread)
         {

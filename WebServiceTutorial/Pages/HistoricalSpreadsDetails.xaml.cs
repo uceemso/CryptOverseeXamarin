@@ -1,4 +1,5 @@
-﻿using CryptOverseeMobileApp.Models;
+﻿using ChocoExchangesApi.Models;
+using CryptOverseeMobileApp.Models;
 using CryptOverseeMobileApp.ViewModels;
 using CryptOverseeMobileApp.ViewModels.Settings;
 using System;
@@ -18,6 +19,8 @@ namespace CryptOverseeMobileApp.Pages
         private HistoricalSpreadsDetailsViewModel _viewModel;
         public HistoricalSpreadModel HistoricalSpreadModel { get; set; }
         public HistoricalSettingsViewModel HistoricalSettingsViewModel { get; set; }
+        public List<SpreadNote> Notes { get; set; }
+
 
         public HistoricalSpreadsDetails()
         {

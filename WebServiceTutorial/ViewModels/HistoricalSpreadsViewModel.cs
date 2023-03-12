@@ -1,148 +1,136 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using ChocoExchangesApi.Models;
 using CryptOverseeMobileApp.Models;
 using Reactive.Bindings;
 using CryptOverseeMobileApp.Pages;
 using CryptOverseeMobileApp.ViewModels.Settings;
-using Rg.Plugins.Popup.Extensions;
 using Xamarin.Forms;
+using ChocoExchangesApi.Models;
+using ChocoExchangesApi.Services;
 
 namespace CryptOverseeMobileApp.ViewModels
 {
     public class HistoricalSpreadsViewModel : ViewModelBase
     {
-        private readonly HistoricalSettingsContentPage _settingPopup;
         private readonly HistoricalSettingsViewModel _settingViewModel;
-        private HistoricalSpreadsDetails _historicalSpreadDetails;
+        private readonly HistoricalSpreadsDetails _historicalSpreadDetails;
 
 
-        readonly RestService _restService;
+        private readonly RestService _restService;
+        private DateTime _lastUpdateThreeHours = new();
+        private DateTime _lastUpdateOneHours = new();
+        private List<SpreadNote> _notes = new();
         private List<HistoricalSpreadModel> _unfilteredSpreads = new();
-        private Dictionary<int,List<HistoricalSpreadModel>> _unfilteredSpreadsDic = new();
+        private readonly Dictionary<int,List<HistoricalSpreadModel>> _unfilteredSpreadsDic = new();
 
         public INavigation Navigation { get; set; }
         
         public HistoricalSpreadsViewModel()
         {
-            InitialiseReactiveProperties();
-
+            _restService = new RestService();
+            _settingViewModel = new HistoricalSettingsViewModel();
             _historicalSpreadDetails = new HistoricalSpreadsDetails();
 
+            InitialiseReactiveProperties();
 
-            _settingViewModel = new HistoricalSettingsViewModel();
-            _settingPopup = new HistoricalSettingsContentPage(_settingViewModel);
-            //_popupViewModel = new MyPopupPageViewModel();
+            //Task.Factory.StartNew(async () =>
+            //{
+            //    _settingViewModel.PremiumMembership.Value = await PurchasesHelper.WasItemPurchased(PurchasesHelper.ProductCode);
+            //});
 
-            _restService = new RestService();
             InitialiseDataOnStart();
         }
 
-        public double MinAverageSpread => _settingViewModel.MinAverageSpread.Value;
-
-        public void InitialiseReactiveProperties()
+        private void InitialiseReactiveProperties()
         {
             Spreads = new ReactiveProperty<ObservableCollection<HistoricalSpreadModel>>(new ObservableCollection<HistoricalSpreadModel>());
-
             LastUpdate = new ReactiveProperty<DateTime>();
-            SelectedSpread = new ReactiveProperty<HistoricalSpreadModel>();
-            SelectedSpread.Where(_ => _ != null).Subscribe(newValue =>
-            {
-                //_popupViewModel.Symbol = newValue.Symbol;
-                //_popupViewModel.HistSpread = newValue;
-                //_popupViewModel.MinAverageSpread = MinAverageSpread;
-            });
-
             NumberResultsAfterFiltering = new ReactiveProperty<int>(0);
             NumberResultsRaw = new ReactiveProperty<int>(0);
             IsRefreshing = new ReactiveProperty<bool>();
         }
-        
 
+        public double MinAverageSpread => _settingViewModel.MinAverageSpread.Value;
         public ReactiveProperty<int> NumberResultsAfterFiltering { get; set; }
         public ReactiveProperty<int> NumberResultsRaw { get; set; }
         public ReactiveProperty<bool> IsRefreshing { get; set; }
         public ReactiveProperty<ObservableCollection<HistoricalSpreadModel>> Spreads { get; set; }
-        public ReactiveProperty<HistoricalSpreadModel> SelectedSpread { get; set; }
         public ReactiveProperty<DateTime> LastUpdate { get; set; }
 
 
-        public ICommand RefreshHistSpreadCommand => new Command(_ => RefreshData());
-
-        //public Command SelectedTagChanged
-        //{
-        //    get { return new(async () => { await Navigation.PushPopupAsync(new MyPopupPage(_popupViewModel)); }); }
-        //}
+        public ICommand RefreshHistSpreadCommand => new Command(_ =>
+        {
+            RefreshData(true);
+        });
+        
 
         public ICommand SelectedPictureChangedCommand
         {
-            get
-            {
-                return new Command(async selectedItem =>
+            get =>
+                new Command(async selectedItem =>
                 {
                     try
                     {
                         var item = (HistoricalSpreadModel)selectedItem;
-                        //var vm = new MyPopupPageViewModel();
-
-
 
                         _historicalSpreadDetails.HistoricalSpreadModel = item;
                         _historicalSpreadDetails.HistoricalSettingsViewModel = _settingViewModel;
 
                         await Navigation.PushAsync(_historicalSpreadDetails);
-
-                        //vm.RefreshSpread(item);
-                        //await Navigation.PushPopupAsync(new MyPopupPage(vm));
-
-
                     }
                     catch (Exception ex)
                     {
-
                     }
                 });
-            }
         }
 
-        public async Task RefreshData()
+
+        public async Task RefreshData(bool refreshDataFromFileShare)
         {
             try
             {
-                IsRefreshing.Value = true;
-                var stopwatch = Stopwatch.StartNew();
-                var historicalSpreadsOneHour = await _restService.GetHistoricalSpreadsFromFileShare();
+                _notes = await _restService.GetExchangeNotesFromFileShare();
+                _historicalSpreadDetails.Notes = _notes;
 
+                if (refreshDataFromFileShare)
+                {
+                    var stopwatch = Stopwatch.StartNew();
+                    var historicalSpreadsOneHour = await _restService.GetHistoricalSpreadsFromFileShare(1);
+                    _unfilteredSpreadsDic[1] = historicalSpreadsOneHour.Data;
+                    _lastUpdateOneHours = historicalSpreadsOneHour.DateTime;
 
-                //var spreads1 = _restService.GetHistoricalSpreadsAsync(1);
-                //var spreads24 = _restService.GetHistoricalSpreadsAsync(24);
-                //await Task.WhenAll(new List<Task>() {spreads1, spreads24});
-                //_unfilteredSpreadsDic[1] = spreads1.Result;
-                //_unfilteredSpreadsDic[24] = spreads24.Result;
+                    var howLong = DateTime.Now - _lastUpdateThreeHours;
+                    if (howLong > TimeSpan.FromMinutes(15))
+                    {
+                        var historicalSpreadsThreeHour = await _restService.GetHistoricalSpreadsFromFileShare(3);
+                        _unfilteredSpreadsDic[3] = historicalSpreadsThreeHour.Data;
+                        _lastUpdateThreeHours = historicalSpreadsThreeHour.DateTime;
+                    }
+                    
+                    stopwatch.Stop();
+                    Console.WriteLine($"Get historical data from file share took {stopwatch.ElapsedMilliseconds} ms");
+                }
 
-                _unfilteredSpreadsDic[1] = historicalSpreadsOneHour.Data;
-                LastUpdate.Value = historicalSpreadsOneHour.DateTime;
+                var nbHours = _settingViewModel.NumberHours.Value;
+                _unfilteredSpreads = _unfilteredSpreadsDic[nbHours];
+                if (nbHours == 1)
+                {
+                    LastUpdate.Value = _lastUpdateOneHours;
+                } else if (nbHours == 1)
+                {
+                    LastUpdate.Value = _lastUpdateThreeHours;
+                }
 
-                stopwatch.Stop();
-                Console.WriteLine($"Get data took {stopwatch.ElapsedMilliseconds} ms");
-
-                // _unfilteredSpreads = await _restService.GetHistoricalSpreadsAsync(_settingViewModel.NumberHours.Value);
-                _unfilteredSpreads = _unfilteredSpreadsDic[_settingViewModel.NumberHours.Value];
 
                 var stopwatch2 = Stopwatch.StartNew();
-                IsRefreshing.Value = true;
+                //IsRefreshing.Value = true;
 
-                var nberHours = _settingViewModel.NumberHours.Value;
-
-
-                _unfilteredSpreads = _unfilteredSpreadsDic[nberHours];
                 _settingViewModel.InitialiseSettings(new List<ISpread>(_unfilteredSpreads));
                 NumberResultsRaw.Value = _unfilteredSpreads.Count;
 
@@ -151,15 +139,33 @@ namespace CryptOverseeMobileApp.ViewModels
                 foreach (var spread in filteredSpreads)
                 {
                     spread.SpreadOccurence = spread.GetSpreadOccurence(_settingViewModel.MinAverageSpread.Value);
+
+                    if (Enum.TryParse(spread.BuyOn, out SupportedExchangeName buyOnExchange) &&
+                        Enum.TryParse(spread.SellOn, out SupportedExchangeName sellOnExchange))
+                    {
+                        //var notes = ExchangesData.FilterNotes(sp.BaseCurrency, buyOnExchange, sellOnExchange);
+                        var notes = _notes.FilterNotes(spread.BaseCurrency, buyOnExchange, sellOnExchange);
+                        if (notes.Any())
+                        {
+                            var warning = string.Join('\n', notes.Select(_ => _.Note).ToList());
+                            spread.Warning = warning;
+                            spread.HasWarning = true;
+                        }
+
+                    }
+                    else
+                    {
+                        var xx = 1;
+                    }
                 }
 
                 Spreads.Value = new ObservableCollection<HistoricalSpreadModel>(filteredSpreads);
                 NumberResultsAfterFiltering.Value = filteredSpreads.Count;
 
-                stopwatch.Stop();
+                stopwatch2.Stop();
                 Console.WriteLine($"HistoricalSpread - Refreshed data in {stopwatch2.ElapsedMilliseconds} ms");
 
-                if (_settingViewModel.ExchangesVM.IsEmpty())
+                if (_settingViewModel.AvailableExchanges.IsEmpty())
                 {
                     _settingViewModel.InitialiseSettings(new List<ISpread>(_unfilteredSpreads));
                 }
@@ -181,28 +187,7 @@ namespace CryptOverseeMobileApp.ViewModels
             {
                 try
                 {
-                    //IsRefreshing.Value = true;
-                    //var stopwatch = Stopwatch.StartNew();
-                    //var historicalSpreadsOneHour = await _restService.GetHistoricalSpreadsFromFileShare();
-
-
-                    ////var spreads1 = _restService.GetHistoricalSpreadsAsync(1);
-                    ////var spreads24 = _restService.GetHistoricalSpreadsAsync(24);
-                    ////await Task.WhenAll(new List<Task>() {spreads1, spreads24});
-                    ////_unfilteredSpreadsDic[1] = spreads1.Result;
-                    ////_unfilteredSpreadsDic[24] = spreads24.Result;
-
-                    //_unfilteredSpreadsDic[1] = historicalSpreadsOneHour.Data;
-
-
-                    //stopwatch.Stop();
-                    //Console.WriteLine($"Get data took {stopwatch.ElapsedMilliseconds} ms");
-
-                    //// _unfilteredSpreads = await _restService.GetHistoricalSpreadsAsync(_settingViewModel.NumberHours.Value);
-                    //_unfilteredSpreads = _unfilteredSpreadsDic[_settingViewModel.NumberHours.Value];
-
-
-                    RefreshData();
+                    RefreshData(true);
                 }
                 catch (Exception ex)
                 {
@@ -223,9 +208,11 @@ namespace CryptOverseeMobileApp.ViewModels
                 return new Command(async _ =>
                 {
                     var navigation = Application.Current.MainPage.Navigation;
+
                     if (navigation != null && navigation.ModalStack.Count == 0)
                     {
-                        await navigation.PushModalAsync(_settingPopup);
+                        var popup = new HistoricalSettingsContentPage(_settingViewModel);
+                        await navigation.PushModalAsync(popup);
                     }
                     else
                     {

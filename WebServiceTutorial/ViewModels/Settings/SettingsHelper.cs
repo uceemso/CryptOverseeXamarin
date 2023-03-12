@@ -42,18 +42,65 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             return exchanges;
         }
 
+        public static List<string> GetDistinctExchanges(List<ISpread> spreads)
+        {
+            var exchanges = spreads.Select(_ => _.BuyOn).Distinct().Union(spreads.Select(_ => _.SellOn).Distinct()).Distinct().ToList();
+            return exchanges;
+        }
+
         public static List<Element> GetElementList(List<string> names, string pageName)
         {
             var x = names.Select(_ => new Element(pageName, _)).OrderBy(_ => _.Name);
             return x.ToList();
         }
 
-        public static List<Element> GetExchangeElementList(List<SpreadModel> spreads, string pageName)
+        public static List<Element> GetExchangeElementList(List<SpreadModel> spreads, string pageName, bool premium)
         {
             var exchanges = GetDistinctExchanges(spreads);
-            var x = exchanges.Select(_ => new Element(pageName, _)).OrderBy(_ => _.Name);
-            return x.ToList();
+            var elements = exchanges.Select(_ => new Element(pageName, _)).OrderBy(_ => _.Name).ToList();
+
+            if (!premium)
+            {
+                var allowedExchanges = new List<string> { "kucoin", "huobi" };
+                foreach (var el in elements)
+                {
+                    el.Enabled = allowedExchanges.Contains(el.Name.ToLower());
+                }
+            }
+
+            return elements;
         }
+
+        public static List<Element> GetExchangeElementList(List<ISpread> spreads, string pageName, bool premium)
+        {
+            var exchanges = GetDistinctExchanges(spreads);
+            var elements = exchanges.Select(_ => new Element(pageName, _)).OrderBy(_ => _.Name).ToList();
+
+            if (!premium)
+            {
+                var allowedExchanges = new List<string> { "kucoin", "huobi" };
+                foreach (var el in elements)
+                {
+                    el.Enabled = allowedExchanges.Contains(el.Name.ToLower());
+                }
+            }
+
+            return elements;
+        }
+
+        //public static List<Element> GetRestrictedExchangeElementList(List<SpreadModel> spreads, string pageName)
+        //{
+        //    var exchanges = GetDistinctExchanges(spreads);
+        //    var elements = exchanges.Select(_ => new Element(pageName, _)).OrderBy(_ => _.Name).ToList();
+
+        //    var allowedExchanges = new List<string> { "kucoin", "huobi"};
+        //    foreach (var el in elements)
+        //    {
+        //        el.Enabled = allowedExchanges.Contains(el.Name.ToLower());
+        //        el.AllowedToSavePreference = false;
+        //    }
+        //    return elements;
+        //}
 
         public static List<Element> GetMarketElementList(List<SpreadModel> spreads, string pageName)
         {
@@ -69,6 +116,16 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
                 var filteredSpreads = spreads.Where(_ => _.SpreadValue > settings.MinAverageSpread.Value
                                                          && ShouldDisplayBasedOnExchangeSettings(settings.AvailableExchanges, _)
                                                          && ShouldDisplayBaseOnMarketSetting(settings.AvailableMarkets, _)).ToList();
+
+                if (!settings.IgnoreCap.Value)
+                {
+                    filteredSpreads = filteredSpreads.Where(_ => _.SpreadValue < settings.MaxAverageSpread.Value).ToList();
+                }
+
+                if (settings.HidePairsWithWarning.Value)
+                {
+                    filteredSpreads = filteredSpreads.Where(_ => !_.HasWarning).ToList();
+                }
 
                 //filteredSpreads = filteredSpreads.OrderByDescending(_ => _.SpreadValue).ToList();
                 return filteredSpreads;

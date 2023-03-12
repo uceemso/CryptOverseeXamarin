@@ -20,17 +20,15 @@ namespace CryptOverseeMobileApp.ViewModels
         private readonly RestService _restService;
         private readonly LiveSpreadSettingsViewModel _settingViewModel;
         private readonly LiveSpreadDetails _liveSpreadDetails;
-        private bool _premiumMembership;
 
         private string _searchBar;
-        private List<SpreadNote> _notes = new List<SpreadNote>();
+        private List<SpreadNote> _notes = new();
         private List<SpreadModel> _unfilteredSpreads;
         private List<SpreadModel> _settingsFilteredSpreads;
         
 
         public LiveSpreadViewModel()
         {
-            
             _restService = new RestService();
             _settingViewModel = new LiveSpreadSettingsViewModel();
             _liveSpreadDetails = new LiveSpreadDetails();
@@ -46,14 +44,12 @@ namespace CryptOverseeMobileApp.ViewModels
             {
                 NumberResultsAfterFiltering.Value = spreads.Count;
             });
-
-
-
+            
             Task.Factory.StartNew(async () =>
             {
-                _premiumMembership = await PurchasesHelper.WasItemPurchased(PurchasesHelper.ProductCode);
-                _settingViewModel.PremiumMembership.Value = _premiumMembership;
+                _settingViewModel.PremiumMembership.Value = await PurchasesHelper.WasItemPurchased(PurchasesHelper.ProductCode);
             });
+
 
             Task.Factory.StartNew(async () =>
             {
@@ -85,7 +81,8 @@ namespace CryptOverseeMobileApp.ViewModels
                     if (Enum.TryParse(sp.BuyOn, out SupportedExchangeName buyOnExchange) &&
                         Enum.TryParse(sp.SellOn, out SupportedExchangeName sellOnExchange))
                     {
-                        var notes = ExchangesData.FilterNotes(sp.BaseCurrency, buyOnExchange, sellOnExchange);
+                        //var notes = ExchangesData.FilterNotes(sp.BaseCurrency, buyOnExchange, sellOnExchange);
+                        var notes = _notes.FilterNotes(sp.BaseCurrency, buyOnExchange, sellOnExchange);
                         if (notes.Any())
                         {
                             var warning = string.Join('\n', notes.Select(_ => _.Note).ToList()) ;

@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CryptOverseeMobileApp.ViewModels;
 using CryptOverseeMobileApp.ViewModels.Settings;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -30,16 +25,16 @@ namespace CryptOverseeMobileApp.Pages
 
         protected override void OnAppearing()
         {
-            _viewmodel.ExchangesVM.SetAllowedToSavePreference(true);
-            _viewmodel.MarketsVM.SetAllowedToSavePreference(true);
+            _viewmodel.AvailableExchanges.SetAllowedToSavePreference(true);
+            _viewmodel.AvailableMarkets.SetAllowedToSavePreference(true);
 
             base.OnDisappearing();
         }
 
         protected override void OnDisappearing()
         {
-            _viewmodel.ExchangesVM.SetAllowedToSavePreference(false);
-            _viewmodel.MarketsVM.SetAllowedToSavePreference(false);
+            _viewmodel.AvailableExchanges.SetAllowedToSavePreference(false);
+            _viewmodel.AvailableMarkets.SetAllowedToSavePreference(false);
 
             base.OnDisappearing();
         }

@@ -23,23 +23,19 @@
         <StackLayout Margin="10">
 
             <StackLayout Orientation="Horizontal" >
-                <Label Margin="0,0,0,0" Text="Historical Spreads" TextColor="Black" FontSize="Title"  />
-                <ImageButton Source="settings.png" HeightRequest="30" HorizontalOptions="EndAndExpand" BackgroundColor="Transparent"
+                <StackLayout Orientation="Vertical">
+                    <Label Text="{Binding LastUpdate.Value, StringFormat='Last updated at {0:dd/MM/yy HH:mm tt}'}" TextColor="Gray" FontSize="Default" />
+                    <StackLayout Orientation="Horizontal" Margin="0,-5,0,0">
+                        <Label Text="{Binding NumberResultsAfterFiltering.Value, StringFormat='Found {0:F0} '}" TextColor="Gray" FontSize="Default"  />
+                        <Label Text="markets" TextColor="Gray" FontSize="Default" />
+                        <Label Text="{Binding NumberResultsRaw.Value, StringFormat='({0:F0} markets in total)'}" TextColor="Gray" FontSize="Default"  />
+                    </StackLayout>
+                </StackLayout>
+                <ImageButton Source="settings.png" HeightRequest="40" HorizontalOptions="EndAndExpand" BackgroundColor="Transparent"
                              Command="{Binding NavigateToSettingsCommand}">
                 </ImageButton>
             </StackLayout>
 
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Last update" TextColor="Gray" FontSize="Default" />
-                <Label Text="{Binding LastUpdate.Value, StringFormat='{0:ddMMMyyyy HH:mm:ss}'}" TextColor="Gray" FontSize="Default" />
-            </StackLayout>
-
-            <StackLayout Orientation="Horizontal">
-                <Label Text="Found" TextColor="Gray" FontSize="Default" />
-                <Label Text="{Binding NumberResultsAfterFiltering.Value, StringFormat='{0:F0} '}" TextColor="Gray" FontSize="Default"  />
-                <Label Text="markets" TextColor="Gray" FontSize="Default" />
-                <Label Text="{Binding NumberResultsRaw.Value, StringFormat='({0:F0} markets in total)'}" TextColor="Gray" FontSize="Default"  />
-            </StackLayout>
 
             <!--<ActivityIndicator HeightRequest="30" IsVisible="{Binding ActivityIndicatorRunning.Value}" IsRunning="{Binding ActivityIndicatorRunning.Value}"/>-->
 
@@ -56,45 +52,66 @@
                                                               CommandParameter="{Binding}" NumberOfTapsRequired="1" />
                                     </Frame.GestureRecognizers>
                                     <StackLayout Orientation="Vertical">
-                                        <StackLayout Orientation="Vertical">
 
-                                            <StackLayout Orientation="Horizontal" VerticalOptions="Center">
-                                                <StackLayout Orientation="Horizontal" HorizontalOptions="StartAndExpand" VerticalOptions="Center">
-                                                    <Label Text="{Binding BaseCurrency}" TextColor="Black" FontSize="Large" VerticalOptions="Center" />
-                                                    <Label Text="/" TextColor="Gray" FontSize="Body" VerticalOptions="Center" />
-                                                    <Label Text="{Binding QuoteCurrency, StringFormat='{0:F2}'}" TextColor="Gray" FontSize="Body" VerticalOptions="Center" />
-                                                </StackLayout>
+                                        <Grid >
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"  />
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="*"  />
+                                            </Grid.RowDefinitions>
 
-                                                <StackLayout Orientation="Horizontal" VerticalOptions="Center">
-                                                    <Label Text="Buy on:" TextColor="Silver" FontSize="Caption" VerticalOptions="Center" />
-                                                    <Label Text="{Binding BuyOn}" TextColor="Gray" FontSize="Default" VerticalOptions="Center" />
-                                                    <Label Text="Sell on:" TextColor="Silver" FontSize="Caption" VerticalOptions="Center" />
-                                                    <Label Text="{Binding SellOn}" TextColor="Gray" FontSize="Default" VerticalOptions="Center"/>
-                                                </StackLayout>
-
+                                            <StackLayout Spacing="0" Padding="10,0" Grid.Column="0" Orientation="Vertical" BackgroundColor="Transparent" HorizontalOptions="Start" >
+                                                <Label Text="BUY" TextColor="DarkOrange" FontSize="Caption" FontAttributes="Bold"  HorizontalOptions="Center" />
+                                                <Label Text="{Binding BuyOn}" TextColor="Gray" FontSize="Default" HorizontalOptions="Center" />
                                             </StackLayout>
 
-                                            <StackLayout Orientation="Vertical">
-                                                <StackLayout Orientation="Horizontal" Margin="0, -5, 0, 0">
-                                                    <Label Text="Spread:" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                                    <Label Text="Avg." TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                                    <Label Text="{Binding AverageSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Default"/>
-                                                    <Label Text="Max." TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                                    <Label Text="{Binding MaxSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Default"/>
+
+                                            <Grid Grid.Column="1" BackgroundColor="Transparent" RowSpacing="0" VerticalOptions="Center">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"  />
+                                                    <RowDefinition Height="Auto"  />
+                                                </Grid.RowDefinitions>
+
+                                                <StackLayout  Orientation="Horizontal" HorizontalOptions="Center">
+                                                    <Label  Text="{Binding Symbol}" BackgroundColor="Transparent" TextColor="Black" FontSize="Body" FontAttributes="Bold" HorizontalOptions="Center" />
+
+                                                    <!--<Image Source="warning2.png" IsVisible="{Binding HasWarning}" HeightRequest="17"/>-->
                                                 </StackLayout>
 
-                                                <StackLayout Orientation="Horizontal" Margin="0, -5, 0, 0">
-                                                    <Label Text="Spd higher than" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                                    <Label Text="{Binding Path=BindingContext.MinAverageSpread, Source={x:Reference HistoricalSpreadPageName}, StringFormat='{0:F1} % '}" 
-                                                   TextColor="Gray" FontSize="Default" />
-                                                    <Label Text="about" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                                    <Label Text="{Binding SpreadOccurence, StringFormat='{0:F0} %'}" 
-                                                   TextColor="Gray" FontSize="Default" />
-                                                    <Label Text="of the time" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
-                                                </StackLayout>
+                                            </Grid>
 
+
+                                            <StackLayout Spacing="0" Padding="10,0" Margin="0" Grid.Column="2" Orientation="Vertical" BackgroundColor="Transparent" HorizontalOptions="EndAndExpand" >
+                                                <Label Text="SELL" TextColor="MediumAquamarine" FontSize="Caption" FontAttributes="Bold" HorizontalOptions="Center" />
+                                                <Label Text="{Binding SellOn}" TextColor="Gray" FontSize="Default" HorizontalOptions="Center" />
                                             </StackLayout>
+                                        </Grid>
+
+                                        <StackLayout Orientation="Vertical" Margin="10, 0, 0, 0">
+                                            <StackLayout Orientation="Horizontal" Margin="0, -5, 0, 0">
+                                                <Label Text="Spread:" TextColor="Gray" FontSize="Caption" VerticalOptions="End"/>
+                                                <Label Text="Avg." TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
+                                                <Label Text="{Binding AverageSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Default"/>
+                                                <Label Text="Max." TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
+                                                <Label Text="{Binding MaxSpreadValue, StringFormat='{0:F2} %'}" TextColor="Gray" FontSize="Default"/>
+                                                <Image Source="warning2.png" IsVisible="{Binding HasWarning}" HeightRequest="17"/>
+                                            </StackLayout>
+
+                                            <StackLayout Orientation="Horizontal" Margin="0, -5, 0, 0">
+                                                <Label Text="Spread higher than" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
+                                                <Label Text="{Binding Path=BindingContext.MinAverageSpread, Source={x:Reference HistoricalSpreadPageName}, StringFormat='{0:F1} % '}" 
+                                                   TextColor="Gray" FontSize="Default" />
+                                                <Label Text="about" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
+                                                <Label Text="{Binding SpreadOccurence, StringFormat='{0:F0} %'}" 
+                                                   TextColor="Gray" FontSize="Default" />
+                                                <Label Text="of the time" TextColor="Silver" FontSize="Caption" VerticalOptions="End"/>
+                                            </StackLayout>
+
                                         </StackLayout>
+
                                         <!-- Separator -->
                                         <BoxView HeightRequest="1" BackgroundColor="LightGray" VerticalOptions="End"/>
                                     </StackLayout>

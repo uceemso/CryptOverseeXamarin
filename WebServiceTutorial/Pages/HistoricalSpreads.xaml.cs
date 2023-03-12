@@ -21,7 +21,7 @@ namespace CryptOverseeMobileApp.Pages
 
             MessagingCenter.Subscribe<ContentPage>(this, "popped2", (sender) =>
             {
-                viewModel.RefreshData();
+                viewModel.RefreshData(false);
             });
         }
 

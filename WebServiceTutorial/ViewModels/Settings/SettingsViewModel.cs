@@ -1,33 +1,44 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Reactive.Linq;
+using System.Threading.Tasks;
+using System.Windows.Input;
 using CryptOverseeMobileApp.Models;
+using Reactive.Bindings;
+using Xamarin.Forms;
 
 namespace CryptOverseeMobileApp.ViewModels.Settings
 {
-    public abstract class SettingsViewModel : ViewModelBase, ISettings
+    public class SettingsViewModel: ViewModelBase
     {
+
+
         public SettingsViewModel()
         {
-            MarketsVM = new ReactiveList();
-            ExchangesVM = new ReactiveList();
+
         }
 
-        public ReactiveList MarketsVM { get; set; }
-        public ReactiveList ExchangesVM { get; set; }
+        public ReactiveProperty<bool> PremiumMembership { get; set; }
 
-        public abstract void InitialiseSettings(List<ISpread> spreads);
-
-
-        public void InitialiseSettingsWithKey(List<ISpread> spreads, string pageName)
-        {
-            if (ExchangesVM.IsEmpty())
+        public ICommand TapOnExchangeElement =>
+            new Command(selectedItem =>
             {
-                var exchanges = spreads.Select(_ => _.BuyOn).Distinct().Union(spreads.Select(_ => _.SellOn).Distinct()).Distinct().ToList();
-                var x = SettingsHelper.GetElementList(exchanges, pageName);
-                ExchangesVM.SetValues(x);
-            }
-        }
+                try
+                {
+                    if (PremiumMembership.Value)
+                    {
+                        var item = (Element)selectedItem;
+                        item.Toggle();
+                    }
+                }
+                catch (Exception ex)
+                {
+
+                }
+            });
 
     }
+
 
 }
