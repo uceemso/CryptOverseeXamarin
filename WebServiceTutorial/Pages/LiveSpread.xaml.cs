@@ -20,10 +20,12 @@ namespace CryptOverseeMobileApp.Pages
             _vm = (LiveSpreadViewModel)BindingContext;
             _vm.Navigation = Navigation;
 
-            MessagingCenter.Subscribe<ContentPage>(this, "live_spread_settings_popped", (sender) =>
+            MessagingCenter.Subscribe<ContentPage>(this, Constants.MessagingCenter_LiveSettingsClosed, (sender) =>
             {
                 _vm.RefreshGrid();
             });
+
+
 
         }
 

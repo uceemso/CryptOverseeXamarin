@@ -16,10 +16,21 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
 
         public SettingsViewModel()
         {
+            PremiumMembership = new ReactiveProperty<bool>();
 
+            MessagingCenter.Subscribe<ViewModelBase>(this, Constants.MessagingCenter_PremiumOn, (sender) =>
+            {
+                PremiumMembership.Value = true;
+            });
+            MessagingCenter.Subscribe<ViewModelBase>(this, Constants.MessagingCenter_PremiumOff, (sender) =>
+            {
+                PremiumMembership.Value = false;
+            });
         }
 
+
         public ReactiveProperty<bool> PremiumMembership { get; set; }
+
 
         public ICommand TapOnExchangeElement =>
             new Command(selectedItem =>
@@ -37,6 +48,18 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
 
                 }
             });
+
+        public ICommand PurchaseCommand => new Command(x => { Purchase(); });
+
+        private async Task Purchase()
+        {
+            var purchased = await PurchasesHelper.PurchaseItem(PurchasesHelper.ProductCode);
+            if (purchased)
+            {
+                var premium = await PurchasesHelper.WasItemPurchased(PurchasesHelper.ProductCode);
+                MessagingCenter.Send<ViewModelBase>(this, premium ? Constants.MessagingCenter_PremiumOn : Constants.MessagingCenter_PremiumOff);
+            }
+        }
 
     }
 

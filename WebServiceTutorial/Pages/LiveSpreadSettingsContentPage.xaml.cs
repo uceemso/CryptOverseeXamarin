@@ -19,7 +19,7 @@ namespace CryptOverseeMobileApp.Pages
         
         async void OnDismissButtonClicked(object sender, EventArgs args)
         {
-            MessagingCenter.Send<ContentPage>(this, "live_spread_settings_popped");
+            MessagingCenter.Send<ContentPage>(this, Constants.MessagingCenter_LiveSettingsClosed);
             await Navigation.PopModalAsync();
         }
 

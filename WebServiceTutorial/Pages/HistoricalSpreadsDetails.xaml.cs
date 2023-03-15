@@ -32,7 +32,6 @@ namespace CryptOverseeMobileApp.Pages
         protected override void OnDisappearing()
         {
             _viewModel.Dispose();
-            //back button logic here
         }
 
         protected override void OnAppearing()

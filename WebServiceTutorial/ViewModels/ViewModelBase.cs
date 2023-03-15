@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace CryptOverseeMobileApp.ViewModels
 {
@@ -14,10 +15,13 @@ namespace CryptOverseeMobileApp.ViewModels
             bool isDebug = false;
             IsDebugCheck(ref isDebug);
             DebugMode.Value = isDebug;
+
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public ReactiveProperty<bool> DebugMode { get; set; }
+
 
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

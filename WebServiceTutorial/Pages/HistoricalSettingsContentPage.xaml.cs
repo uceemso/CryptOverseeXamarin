@@ -19,7 +19,7 @@ namespace CryptOverseeMobileApp.Pages
         
         async void OnDismissButtonClicked(object sender, EventArgs args)
         {
-            MessagingCenter.Send<ContentPage>(this, "popped2");
+            MessagingCenter.Send<ContentPage>(this, Constants.MessagingCenter_HistoricalSettingsClosed);
             await Navigation.PopModalAsync();
         }
 

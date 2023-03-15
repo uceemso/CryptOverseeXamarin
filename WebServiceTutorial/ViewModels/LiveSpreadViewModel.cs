@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using ChocoExchangesApi.Models;
@@ -44,11 +45,12 @@ namespace CryptOverseeMobileApp.ViewModels
             {
                 NumberResultsAfterFiltering.Value = spreads.Count;
             });
-            
-            Task.Factory.StartNew(async () =>
+
+            Task.Factory.StartNew(() =>
             {
-                _settingViewModel.PremiumMembership.Value = await PurchasesHelper.WasItemPurchased(PurchasesHelper.ProductCode);
-            });
+                var premium = PurchasesHelper.WasPurchased(PurchasesHelper.ProductCode);
+                MessagingCenter.Send<ViewModelBase>(this, premium ? Constants.MessagingCenter_PremiumOn : Constants.MessagingCenter_PremiumOff);
+                });
 
 
             Task.Factory.StartNew(async () =>
@@ -81,7 +83,6 @@ namespace CryptOverseeMobileApp.ViewModels
                     if (Enum.TryParse(sp.BuyOn, out SupportedExchangeName buyOnExchange) &&
                         Enum.TryParse(sp.SellOn, out SupportedExchangeName sellOnExchange))
                     {
-                        //var notes = ExchangesData.FilterNotes(sp.BaseCurrency, buyOnExchange, sellOnExchange);
                         var notes = _notes.FilterNotes(sp.BaseCurrency, buyOnExchange, sellOnExchange);
                         if (notes.Any())
                         {

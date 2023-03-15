@@ -25,8 +25,6 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             NumberHours = new ReactiveProperty<int>(1);
             AvailableExchanges = new ReactiveList();
             AvailableMarkets = new ReactiveList();
-            PremiumMembership = new ReactiveProperty<bool>();
-
 
             NumberHours.Subscribe(_ =>
             {
@@ -49,10 +47,8 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
         public ReactiveProperty<bool> DurationIsChecked1 { get; set; }
         public ReactiveProperty<bool> DurationIsChecked3 { get; set; }
 
-        //public ReactiveProperty<bool> PremiumMembership { get; set; }
         public ReactiveList AvailableExchanges { get; set; }
         public ReactiveList AvailableMarkets { get; set; }
-        public ICommand PurchaseCommand => new Command(x => { Purchase(); });
 
         public void InitialiseSettings(List<ISpread> spreads)
         {
@@ -79,33 +75,6 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             } catch (Exception ex)
             {
                 return null;
-            }
-        }
-
-        //public ICommand TapOnExchangeElement =>
-        //    new Command(selectedItem =>
-        //    {
-        //        try
-        //        {
-        //            if (PremiumMembership.Value)
-        //            {
-        //                var item = (Element)selectedItem;
-        //                item.Toggle();
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-        //    });
-
-        private async Task Purchase()
-        {
-            var purchased = await PurchasesHelper.PurchaseItem(PurchasesHelper.ProductCode);
-            if (purchased)
-            {
-                var premium = await PurchasesHelper.WasItemPurchased(PurchasesHelper.ProductCode);
-                PremiumMembership.Value = premium;
             }
         }
 

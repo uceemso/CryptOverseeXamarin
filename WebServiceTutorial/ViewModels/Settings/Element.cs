@@ -22,7 +22,6 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             Enabled = enabled;
         }
 
-        public bool PremiumMembership { get; set; }
         public string Name { get; set; }
         public bool AllowedToSavePreference { get; set; }
 

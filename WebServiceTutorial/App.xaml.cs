@@ -1,4 +1,5 @@
-﻿using Xamarin.Forms;
+﻿using System.Threading.Tasks;
+using Xamarin.Forms;
 
 namespace CryptOverseeMobileApp
 {
@@ -10,6 +11,7 @@ namespace CryptOverseeMobileApp
 
             //MainPage = new MainPage();
             MainPage = new TabbedPage1();
+
         }
 
         protected override void OnStart()

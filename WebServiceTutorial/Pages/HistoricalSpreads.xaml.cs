@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CryptOverseeMobileApp.ViewModels;
+﻿using CryptOverseeMobileApp.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -19,24 +14,12 @@ namespace CryptOverseeMobileApp.Pages
             var viewModel = (HistoricalSpreadsViewModel) BindingContext;
             viewModel.Navigation = Navigation;
 
-            MessagingCenter.Subscribe<ContentPage>(this, "popped2", (sender) =>
+            MessagingCenter.Subscribe<ContentPage>(this, Constants.MessagingCenter_HistoricalSettingsClosed, (sender) =>
             {
                 viewModel.RefreshData(false);
             });
         }
-
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-        }
-
-
-
-        protected override void OnDisappearing()
-        {
-            base.OnDisappearing();
-        }
-        
+       
 
     }
 }

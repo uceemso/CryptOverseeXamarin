@@ -25,12 +25,9 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
             MinAverageSpread = new ReactiveProperty<double>(0.5);
             MaxAverageSpreadRounded = new ReactiveProperty<double>(100);
             MaxAverageSpread = new ReactiveProperty<double>(100);
-            PremiumMembership = new ReactiveProperty<bool>();
             IgnoreCap = new ReactiveProperty<bool>();
             HidePairsWithWarning = new ReactiveProperty<bool>();
 
-        
-            
             MinAverageSpread
                 .Throttle(TimeSpan.FromMilliseconds(20))
                 .Subscribe(_ =>
@@ -47,7 +44,6 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
         }
 
         public ReactiveProperty<bool> HidePairsWithWarning { get; set; }
-        //public ReactiveProperty<bool> PremiumMembership { get; set; }
         public ReactiveProperty<bool> IgnoreCap { get; set; }
 
         public ReactiveProperty<double> MinAverageSpread { get; set; }
@@ -58,7 +54,6 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
 
         public ReactiveList AvailableExchanges { get; set; }
         public ReactiveList AvailableMarkets { get; set; }
-        public ICommand PurchaseCommand => new Command(x => { Purchase(); });
         public ICommand CheckPurchasesCommand => new Command(x => { CheckPurchase(); });
 
         public void InitialiseSettings(List<SpreadModel> spreads)
@@ -89,33 +84,6 @@ namespace CryptOverseeMobileApp.ViewModels.Settings
                 }
             });
 
-
-        //public ICommand TapOnExchangeElement =>
-        //    new Command(selectedItem =>
-        //    {
-        //        try
-        //        {
-        //            if (PremiumMembership.Value)
-        //            {
-        //                var item = (Element)selectedItem;
-        //                item.Toggle();
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-
-        //        }
-        //    });
-
-
-        private async Task Purchase()
-        {
-            var purchased = await PurchasesHelper.PurchaseItem(PurchasesHelper.ProductCode);
-            if (purchased)
-            {
-                CheckPurchase();
-            }
-        }
 
         private async Task CheckPurchase()
         {

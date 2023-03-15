@@ -34,7 +34,8 @@ namespace CryptOverseeMobileApp.ViewModels
             MinAverageSpread = new ReactiveProperty<double>();
             MaxSpreadValue = new ReactiveProperty<double>();
             MinSpreadValue = new ReactiveProperty<double>();
-
+            Note = new ReactiveProperty<string>();
+            HasWarning = new ReactiveProperty<bool>();
 
             Spread = new ReactiveProperty<Spread>();
             LastUpdate = new ReactiveProperty<DateTime>();
@@ -106,11 +107,15 @@ namespace CryptOverseeMobileApp.ViewModels
         public ReactiveProperty<double> SpreadOccurence { get; set; }
         public ReactiveProperty<double> PositiveSpreadOccurence { get; set; }
         public ReactiveProperty<double> AverageSpreadValue { get; set; }
+        public ReactiveProperty<string> Note { get; set; }
+        public ReactiveProperty<bool> HasWarning { get; set; }
 
         public void StartLiveFeed(HistoricalSpreadModel item, HistoricalSettingsViewModel settings)
         {
             _token = new CancellationTokenSource();
             HistoricalSpreadModel.Value = item;
+            Note.Value = item.Warning;
+            HasWarning.Value = item.HasWarning;
 
             var startDate = DateTime.Now.AddDays(-10);
             var endDate = DateTime.Now;

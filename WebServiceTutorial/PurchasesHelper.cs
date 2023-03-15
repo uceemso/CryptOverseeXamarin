@@ -9,6 +9,8 @@ namespace CryptOverseeMobileApp
     public static class PurchasesHelper
     {
         public static string ProductCode = "cryptoverseeproductid";
+        private static readonly object Locker = new object();
+
         public static async Task<bool> PurchaseItem(string productId)
         {
             var billing = CrossInAppBilling.Current;
@@ -53,7 +55,17 @@ namespace CryptOverseeMobileApp
 
             return true;
         }
-        
+
+
+        public static bool WasPurchased(string productId)
+        {
+            lock (Locker)
+            {
+                return WasItemPurchased(productId).Result;
+            }
+            
+        }
+
         public static async Task<bool> WasItemPurchased(string productId)
         {
             var billing = CrossInAppBilling.Current;

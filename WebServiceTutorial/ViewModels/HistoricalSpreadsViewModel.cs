@@ -39,10 +39,6 @@ namespace CryptOverseeMobileApp.ViewModels
 
             InitialiseReactiveProperties();
 
-            //Task.Factory.StartNew(async () =>
-            //{
-            //    _settingViewModel.PremiumMembership.Value = await PurchasesHelper.WasItemPurchased(PurchasesHelper.ProductCode);
-            //});
 
             InitialiseDataOnStart();
         }
@@ -143,7 +139,6 @@ namespace CryptOverseeMobileApp.ViewModels
                     if (Enum.TryParse(spread.BuyOn, out SupportedExchangeName buyOnExchange) &&
                         Enum.TryParse(spread.SellOn, out SupportedExchangeName sellOnExchange))
                     {
-                        //var notes = ExchangesData.FilterNotes(sp.BaseCurrency, buyOnExchange, sellOnExchange);
                         var notes = _notes.FilterNotes(spread.BaseCurrency, buyOnExchange, sellOnExchange);
                         if (notes.Any())
                         {
