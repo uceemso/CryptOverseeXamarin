@@ -27,7 +27,7 @@
 
             <StackLayout Orientation="Vertical" IsVisible="{Binding IsLoading.Value, Converter={StaticResource InverseBoolConverter}}">
 
-                <Label Text="{Binding LastUpdate.Value, StringFormat='Last updated at {0:ddMMMyyyy HH:mm:ss}'}" Padding="10,0" TextColor="Gray" FontSize="Default" />
+                <Label Text="{Binding LastUpdate.Value, StringFormat='Last updated at {0:dd/MM/yy HH:mm tt}'}" Padding="10,0" TextColor="Gray" FontSize="Default" />
                     <!--<Label Text="Live prices and volumes:" TextColor="Gray" FontSize="Default" />-->
 
 

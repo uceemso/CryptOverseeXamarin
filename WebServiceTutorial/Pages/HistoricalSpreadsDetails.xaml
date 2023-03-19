@@ -12,12 +12,12 @@
 
                 <Label Text="{Binding Symbol.Value}" TextColor="Black" FontSize="Large" FontAttributes="Bold" HorizontalOptions="Center" />
 
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Last update" TextColor="Gray" FontSize="Default" />
-                    <Label Text="{Binding LastUpdate.Value, StringFormat='{0:ddMMMyyyy HH:mm:ss}'}" TextColor="Gray" FontSize="Default" />
-                </StackLayout>
+                <Label Text="{Binding LastUpdate.Value, StringFormat='Last updated at {0:dd/MM/yy HH:mm tt}'}" TextColor="Gray" FontSize="Default" />
 
+                
                 <oxy:PlotView Model="{Binding HistoricalSpreadDataPlot}" VerticalOptions="StartAndExpand" HorizontalOptions="Center" HeightRequest="150"/>
+                <Label Text="Time" TextColor="Black" FontSize="Small"  HorizontalOptions="Center" Margin="0,-15,0,10"/>
+
 
                 <StackLayout Orientation="Vertical">
                     <StackLayout Orientation="Horizontal" Margin="10, -5, 0, 0">

@@ -20,7 +20,7 @@ namespace CryptOverseeMobileApp.ViewModels
     {
         private readonly RestService _restService;
         private readonly LiveSpreadSettingsViewModel _settingViewModel;
-        private readonly LiveSpreadDetails _liveSpreadDetails;
+        //private readonly LiveSpreadDetails _liveSpreadDetails;
 
         private string _searchBar;
         private List<SpreadNote> _notes = new();
@@ -32,7 +32,7 @@ namespace CryptOverseeMobileApp.ViewModels
         {
             _restService = new RestService();
             _settingViewModel = new LiveSpreadSettingsViewModel();
-            _liveSpreadDetails = new LiveSpreadDetails();
+            //_liveSpreadDetails = new LiveSpreadDetails();
 
             SearchText = new ReactiveProperty<string>();
             IsRefreshing = new ReactiveProperty<bool>();
@@ -71,7 +71,7 @@ namespace CryptOverseeMobileApp.ViewModels
                 IsRefreshing.Value = true;
                 //var serverResult = await _restService.GetSpreadsAsync(Constants.GetRecentSpreads);
                 _notes = await _restService.GetExchangeNotesFromFileShare();
-                _liveSpreadDetails.Notes = _notes;
+                //_liveSpreadDetails.Notes = _notes;
 
                 var serverResult = await _restService.GetSpreadsFromFileShare();
                 LastUpdate.Value = serverResult.DateTime;
@@ -182,8 +182,10 @@ namespace CryptOverseeMobileApp.ViewModels
                     try
                     {
                         var item = (SpreadModel)selectedItem;
-                        _liveSpreadDetails.SpreadModel = item;
-                        await Navigation.PushAsync(_liveSpreadDetails);
+                        var details = new LiveSpreadDetails();
+                        details.SpreadModel = item;
+                        details.Notes = _notes;
+                        await Navigation.PushAsync(details);
                     }
                     catch (Exception ex)
                     {

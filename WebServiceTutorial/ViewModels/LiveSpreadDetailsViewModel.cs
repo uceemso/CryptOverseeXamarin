@@ -16,7 +16,7 @@ using Spread = ChocoExchangesApi.Models.Spread;
 
 namespace CryptOverseeMobileApp.ViewModels
 {
-    public class LiveSpreadDetailsViewModel : ViewModelBase
+    public class LiveSpreadDetailsViewModel : ViewModelBase, IDisposable
     {
 
         private CancellationTokenSource _token;
@@ -81,6 +81,8 @@ namespace CryptOverseeMobileApp.ViewModels
 
         public void StartLiveFeed(SpreadModel item)
         {
+            IsLoading.Value = true;
+
             _token = new CancellationTokenSource();
             Symbol.Value = item.Symbol;
             BaseCurrency.Value = item.BaseCurrency;
@@ -140,7 +142,7 @@ namespace CryptOverseeMobileApp.ViewModels
                     }
                     else
                     {
-                        // sad, it timed out
+                        Console.WriteLine($"Spread update for {item.Symbol} timed out!");
                     }
 
 

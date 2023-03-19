@@ -27,15 +27,15 @@ namespace CryptOverseeMobileApp.Pages
             Title = "Live Spreads - Details";
         }
 
-        protected override void OnDisappearing()
+        protected override void OnDisappearing() //back button logic here
         {
             _viewModel.Dispose();
-            //back button logic here
+            
         }
 
         protected override void OnAppearing()
         {
-            _viewModel.IsLoading.Value = true;
+            //_viewModel.IsLoading.Value = true;
             _viewModel.StartLiveFeed(SpreadModel);
         }
 
