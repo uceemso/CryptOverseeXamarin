@@ -4,12 +4,14 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using ChocoExchangesApi.Models;
 using ChocoExchangesApi.Services;
 using CryptOverseeMobileApp.Models;
 using OxyPlot;
 using OxyPlot.Series;
 using Reactive.Bindings;
+using Xamarin.Forms;
 using Spread = ChocoExchangesApi.Models.Spread;
 
 namespace CryptOverseeMobileApp.ViewModels
@@ -31,6 +33,7 @@ namespace CryptOverseeMobileApp.ViewModels
             ExchangeB = new ReactiveProperty<string>();
             Note = new ReactiveProperty<string>();
             HasWarning = new ReactiveProperty<bool>();
+            IsLoading = new ReactiveProperty<bool>(true);
             SpreadModel = new ReactiveProperty<SpreadModel>();
             BuyPrice = new ReactiveProperty<double>();
             SellPrice = new ReactiveProperty<double>();
@@ -38,7 +41,7 @@ namespace CryptOverseeMobileApp.ViewModels
             OtherDirectionSellPrice = new ReactiveProperty<double>();
 
             DataPlot = new PlotModel();
-            //DataPlot.Series.Add(new LineSeries( ));
+
             DataPlot.Series.Add(new LineSeries
             {
                 Color = OxyColors.CornflowerBlue,
@@ -53,7 +56,7 @@ namespace CryptOverseeMobileApp.ViewModels
                 DataFieldX = "Date",
                 DataFieldY = "Value"
             });
-            //DataPlot.Series.Add(new LineSeries { Color = OxyColor.FromArgb(1, 255, 0, 0) });
+
 
         }
 
@@ -65,7 +68,6 @@ namespace CryptOverseeMobileApp.ViewModels
         public ReactiveProperty<string> QuoteCurrency { get; private set; }
         public ReactiveProperty<string> ExchangeA { get; private set; }
         public ReactiveProperty<string> ExchangeB { get; private set; }
-        public bool IsOn { get; set; }
         public double MinAverageSpread { get; set; }
         public ReactiveProperty<Spread> Spread { get; set; }
         public ReactiveProperty<DateTime> LastUpdate { get; set; }
@@ -75,8 +77,9 @@ namespace CryptOverseeMobileApp.ViewModels
         public ReactiveProperty<double> OtherDirectionSellPrice { get; set; }
         public ReactiveProperty<string> Note { get; set; }
         public ReactiveProperty<bool> HasWarning { get; set; }
+        public ReactiveProperty<bool> IsLoading { get; set; }
 
-        public void StartLiveFeed(SpreadModel item, List<SpreadNote> notes)
+        public void StartLiveFeed(SpreadModel item)
         {
             _token = new CancellationTokenSource();
             Symbol.Value = item.Symbol;
@@ -87,9 +90,6 @@ namespace CryptOverseeMobileApp.ViewModels
             SpreadModel.Value = item;
             MinAverageSpread = MinAverageSpread;
             Spread.Value = null;
-
-
-
             Note.Value = item.Warning;
             HasWarning.Value = item.HasWarning;
 
@@ -101,38 +101,59 @@ namespace CryptOverseeMobileApp.ViewModels
                 var st = Stopwatch.StartNew();
                 while (!_token.Token.IsCancellationRequested)
                 {
-                    Spread.Value = await Helpers.Test(exchangeA, exchangeB, item.BaseCurrency, item.QuoteCurrency);
-
-                    BuyPrice.Value = (double) Spread.Value.AskA;
-                    SellPrice.Value = (double) Spread.Value.BidB;
-                    OtherDirectionBuyPrice.Value = (double)Spread.Value.AskB;
-                    OtherDirectionSellPrice.Value = (double)Spread.Value.BidA;
-
-                    SpreadModel.Value.SellPrice = (double) Spread.Value.BidB;
-                    LastUpdate.Value = DateTime.Now;
-                    var time = st.ElapsedMilliseconds / 1000;
-                    Console.WriteLine($"[{LastUpdate.Value}] UPDATED SPREADS {item.Symbol}, time: {time} sec, " +
+                    Console.WriteLine($"[{LastUpdate.Value}] X UPDATED SPREADS {item.Symbol}, " +
                                       $"BuyPrice.Value {BuyPrice.Value}, SellPrice.Value {SellPrice.Value}");
-
-                    var buySeries = DataPlot.Series[0] as LineSeries;
-                    var sellSeries = DataPlot.Series[1] as LineSeries;
-
-                    if (!_token.Token.IsCancellationRequested)
+                    var somethingTask = Helpers.Test(exchangeA, exchangeB, item.BaseCurrency, item.QuoteCurrency);
+                    Console.Write("Here");
+                    var winner = await Task.WhenAny(somethingTask, Task.Delay(TimeSpan.FromSeconds(5)));
+                    if (winner == somethingTask)
                     {
-                        buySeries?.Points.Add(new DataPoint(time, BuyPrice.Value));
-                        sellSeries?.Points.Add(new DataPoint(time, SellPrice.Value));
-                        //sellSeries?.Points.Add(new DataPoint(time, SellPrice.Value));
-                        DataPlot.InvalidatePlot(true);
+                        Spread.Value = somethingTask.Result;
+
+
+                        BuyPrice.Value = (double)Spread.Value.AskA;
+                        SellPrice.Value = (double)Spread.Value.BidB;
+                        OtherDirectionBuyPrice.Value = (double)Spread.Value.AskB;
+                        OtherDirectionSellPrice.Value = (double)Spread.Value.BidA;
+
+                        SpreadModel.Value.SellPrice = (double)Spread.Value.BidB;
+                        LastUpdate.Value = DateTime.Now;
+                        var time = st.ElapsedMilliseconds / 1000;
+                        Console.WriteLine($"[{LastUpdate.Value}] UPDATED SPREADS {item.Symbol}, time: {time} sec, " +
+                                          $"BuyPrice.Value {BuyPrice.Value}, SellPrice.Value {SellPrice.Value}");
+
+                        //var buySeries = DataPlot.Series[0] as LineSeries;
+                        //var sellSeries = DataPlot.Series[1] as LineSeries;
+
+                        //if (!_token.Token.IsCancellationRequested)
+                        //{
+                        //    buySeries?.Points.Add(new DataPoint(time, BuyPrice.Value));
+                        //    sellSeries?.Points.Add(new DataPoint(time, SellPrice.Value));
+                        //    DataPlot.InvalidatePlot(true);
+                        //}
+                        //else if (_token.Token.IsCancellationRequested)
+                        //{
+                        //    Console.WriteLine($"Clearing here series for {Symbol.Value}");
+                        //    (DataPlot.Series[0] as LineSeries)?.Points.Clear();
+                        //    (DataPlot.Series[1] as LineSeries)?.Points.Clear();
+                        //}
+                    }
+                    else
+                    {
+                        // sad, it timed out
                     }
 
 
+                    IsLoading.Value = false;
+                    Thread.Sleep(1000);
                 }
 
-                if (_token.Token.IsCancellationRequested)
-                {
-                    (DataPlot.Series[0] as LineSeries)?.Points.Clear();
-                    (DataPlot.Series[1] as LineSeries)?.Points.Clear();
-                }
+                //if (_token.Token.IsCancellationRequested)
+                //{
+                //    Console.WriteLine($"Clearing series for {Symbol.Value}");
+                //    (DataPlot.Series[0] as LineSeries)?.Points.Clear();
+                //    (DataPlot.Series[1] as LineSeries)?.Points.Clear();
+                //}
             }, _token.Token);
         }
 
@@ -141,6 +162,8 @@ namespace CryptOverseeMobileApp.ViewModels
             Console.WriteLine($"Disposing of live stream for {Symbol.Value}");
             _token.Cancel();
         }
+
+
 
     }
 }

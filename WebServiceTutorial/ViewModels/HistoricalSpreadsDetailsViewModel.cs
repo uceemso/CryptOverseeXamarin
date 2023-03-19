@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -62,27 +61,27 @@ namespace CryptOverseeMobileApp.ViewModels
                 LineStyle = LineStyle.None
             });
 
-            DataPlot = new PlotModel();
-            DataPlot.Series.Add(new LineSeries
-            {
-                Color = OxyColors.CornflowerBlue,
-                Title = "Value1",
-                DataFieldX = "Date",
-                DataFieldY = "Value"
-            });
-            DataPlot.Series.Add(new LineSeries
-            {
-                Color = OxyColors.IndianRed,
-                Title = "Value2",
-                DataFieldX = "Date",
-                DataFieldY = "Value"
-            });
+            //DataPlot = new PlotModel();
+            //DataPlot.Series.Add(new LineSeries
+            //{
+            //    Color = OxyColors.CornflowerBlue,
+            //    Title = "Value1",
+            //    DataFieldX = "Date",
+            //    DataFieldY = "Value"
+            //});
+            //DataPlot.Series.Add(new LineSeries
+            //{
+            //    Color = OxyColors.IndianRed,
+            //    Title = "Value2",
+            //    DataFieldX = "Date",
+            //    DataFieldY = "Value"
+            //});
 
 
         }
 
         public PlotModel HistoricalSpreadDataPlot { get; set; }
-        public PlotModel DataPlot { get; set; }
+        //public PlotModel DataPlot { get; set; }
 
         public ReactiveProperty<HistoricalSpreadModel> HistoricalSpreadModel { get; private set; }
         public ReactiveProperty<string> Symbol { get; private set; }
@@ -90,7 +89,6 @@ namespace CryptOverseeMobileApp.ViewModels
         public ReactiveProperty<string> QuoteCurrency { get; private set; }
         public ReactiveProperty<string> ExchangeA { get; private set; }
         public ReactiveProperty<string> ExchangeB { get; private set; }
-        public bool IsOn { get; set; }
         public ReactiveProperty<double> MinAverageSpread { get; set; }
         public ReactiveProperty<double> MaxSpreadValue { get; set; }
         public ReactiveProperty<double> MinSpreadValue { get; set; }
@@ -185,15 +183,12 @@ namespace CryptOverseeMobileApp.ViewModels
 
                     if (!_token.Token.IsCancellationRequested)
                     {
-                        var buySeries = DataPlot.Series[0] as LineSeries;
-                        var sellSeries = DataPlot.Series[1] as LineSeries;
-                        buySeries?.Points.Add(new DataPoint(time, BuyPrice.Value));
-                        sellSeries?.Points.Add(new DataPoint(time, SellPrice.Value));
-
+                        //var buySeries = DataPlot.Series[0] as LineSeries;
+                        //var sellSeries = DataPlot.Series[1] as LineSeries;
+                        //buySeries?.Points.Add(new DataPoint(time, BuyPrice.Value));
                         //sellSeries?.Points.Add(new DataPoint(time, SellPrice.Value));
-                        DataPlot.InvalidatePlot(true);
+                        //DataPlot.InvalidatePlot(true);
 
-                        
                         if (Spread.Value != null)
                         {
                             var historicalSpreadSeries = HistoricalSpreadDataPlot.Series[1] as LineSeries;
@@ -207,8 +202,8 @@ namespace CryptOverseeMobileApp.ViewModels
 
                 if (_token.Token.IsCancellationRequested)
                 {
-                    (DataPlot.Series[0] as LineSeries)?.Points.Clear();
-                    (DataPlot.Series[1] as LineSeries)?.Points.Clear();
+                    //(DataPlot.Series[0] as LineSeries)?.Points.Clear();
+                    //(DataPlot.Series[1] as LineSeries)?.Points.Clear();
                     (HistoricalSpreadDataPlot.Series[0] as LineSeries)?.Points.Clear();
                     (HistoricalSpreadDataPlot.Series[1] as LineSeries)?.Points.Clear();
 

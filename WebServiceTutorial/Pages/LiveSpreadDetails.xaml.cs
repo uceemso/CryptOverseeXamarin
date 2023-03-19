@@ -35,7 +35,8 @@ namespace CryptOverseeMobileApp.Pages
 
         protected override void OnAppearing()
         {
-            _viewModel.StartLiveFeed(SpreadModel, Notes);
+            _viewModel.IsLoading.Value = true;
+            _viewModel.StartLiveFeed(SpreadModel);
         }
 
     }

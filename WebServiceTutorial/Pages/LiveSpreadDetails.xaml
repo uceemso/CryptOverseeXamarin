@@ -2,24 +2,38 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:oxy="clr-namespace:OxyPlot.Xamarin.Forms;assembly=OxyPlot.Xamarin.Forms"
-             xmlns:viewModels="clr-namespace:CryptOverseeMobileApp.ViewModels;assembly=CryptOverseeMobileApp" 
+             xmlns:viewModels="clr-namespace:CryptOverseeMobileApp.ViewModels;assembly=CryptOverseeMobileApp"
+             xmlns:converters="clr-namespace:CryptOverseeMobileApp.Converters;assembly=CryptOverseeMobileApp"
              x:Class="CryptOverseeMobileApp.Pages.LiveSpreadDetails">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:InverseBoolConverter x:Key="InverseBoolConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
     <ContentPage.Content>
-        <StackLayout HorizontalOptions="Center" Padding="0" Margin="0" x:DataType="viewModels:LiveSpreadDetailsViewModel"  >
+        <StackLayout HorizontalOptions="Center" Padding="0" Margin="10" x:DataType="viewModels:LiveSpreadDetailsViewModel"  >
 
 
-                <StackLayout >
+            <Label Text="{Binding Symbol.Value}" TextColor="Black" FontSize="Large" FontAttributes="Bold" HorizontalOptions="Center" />
 
-                    <Label Text="{Binding Symbol.Value}" TextColor="Black" FontSize="Large" HorizontalOptions="Center" />
+            <StackLayout IsVisible="{Binding IsLoading.Value}">
+                <ActivityIndicator IsRunning="{Binding IsLoading.Value}" />
+                <Label Text="Loading live feed from the exchanges" TextColor="Black" HorizontalOptions="Center" />
+            </StackLayout>
 
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="Last update" TextColor="Gray" FontSize="Default" />
-                        <Label Text="{Binding LastUpdate.Value, StringFormat='{0:ddMMMyyyy HH:mm:ss}'}" TextColor="Gray" FontSize="Default" />
-                    </StackLayout>
 
-                    <oxy:PlotView Model="{Binding DataPlot}" VerticalOptions="StartAndExpand" HorizontalOptions="Center" HeightRequest="250"/>
 
-                <Grid >
+            <StackLayout Orientation="Vertical" IsVisible="{Binding IsLoading.Value, Converter={StaticResource InverseBoolConverter}}">
+
+                <Label Text="{Binding LastUpdate.Value, StringFormat='Last updated at {0:ddMMMyyyy HH:mm:ss}'}" Padding="10,0" TextColor="Gray" FontSize="Default" />
+                    <!--<Label Text="Live prices and volumes:" TextColor="Gray" FontSize="Default" />-->
+
+
+                    <!--<oxy:PlotView Model="{Binding DataPlot}" VerticalOptions="StartAndExpand" HorizontalOptions="Center" HeightRequest="150" />-->
+
+                <Grid Margin="0,20,0,0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"  />
                         <ColumnDefinition Width="*" />
@@ -44,15 +58,17 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"  />
                             <RowDefinition Height="Auto"  />
+                            <RowDefinition Height="Auto"  />
                         </Grid.RowDefinitions>
 
                         <StackLayout Spacing="0" Padding="10,0" Margin="0" Grid.Row="0" Orientation="Horizontal" BackgroundColor="Transparent" HorizontalOptions="Center" >
                             <Label Text="Spread: " TextColor="Silver" FontSize="Small"/>
                             <Label BackgroundColor="Transparent" Text="{Binding Spread.Value.SpreadBuyOnASellOnB, StringFormat='{0:F2}%'}" TextColor="Gray" FontSize="Body" HorizontalOptions="Center"  />
                         </StackLayout>
-                        <StackLayout Spacing="0" Padding="10,0" Margin="0" Grid.Row="1" Orientation="Horizontal" BackgroundColor="Transparent" HorizontalOptions="Center" >
-                            <Label Text="Volume: " TextColor="Silver" FontSize="Small"/>
-                            <Label Text="{Binding Spread.Value.VolumeBuyOnASellOnBInQuoteCcy, StringFormat='{0:F2}'}" TextColor="Gray" FontSize="Small"/>
+                        <Label Text="Volume: " TextColor="Silver" FontSize="Small" Grid.Row="1" HorizontalOptions="Center"/>
+
+                        <StackLayout Spacing="0" Padding="10,0" Margin="0" Grid.Row="2" Orientation="Horizontal" BackgroundColor="Transparent" HorizontalOptions="Center" >
+                            <Label Text="{Binding Spread.Value.VolumeBuyOnASellOnBInQuoteCcy, StringFormat='{0:F4}'}" TextColor="Gray" FontSize="Small"/>
                             <Label Text="{Binding SpreadModel.Value.QuoteCurrency}" TextColor="Silver" FontSize="Small" Padding="3,0,0,0"/>
                         </StackLayout>
                     </Grid>
@@ -68,7 +84,7 @@
                     </StackLayout>
                 </Grid>
                     
-                <Label Text="Other way" TextColor="Black" FontSize="Large" HorizontalOptions="Center" />
+                <Label Text="Other way" TextColor="Black" FontSize="Medium" HorizontalOptions="Center" Margin="0,10,0,0"/>
 
                 <Grid >
                     <Grid.ColumnDefinitions>
@@ -95,15 +111,16 @@
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"  />
                             <RowDefinition Height="Auto"  />
+                            <RowDefinition Height="Auto"  />
                         </Grid.RowDefinitions>
 
                         <StackLayout Spacing="0" Padding="10,0" Margin="0" Grid.Row="0" Orientation="Horizontal" BackgroundColor="Transparent" HorizontalOptions="Center" >
                             <Label Text="Spread: " TextColor="Silver" FontSize="Small"/>
                             <Label BackgroundColor="Transparent" Text="{Binding Spread.Value.SpreadBuyOnBSellOnA, StringFormat='{0:F2}%'}" TextColor="Gray" FontSize="Body" HorizontalOptions="Center"  />
                         </StackLayout>
-                        <StackLayout Spacing="0" Padding="10,0" Margin="0" Grid.Row="1" Orientation="Horizontal" BackgroundColor="Transparent" HorizontalOptions="Center" >
-                            <Label Text="Volume: " TextColor="Silver" FontSize="Small"/>
-                            <Label Text="{Binding Spread.Value.VolumeBuyOnBSellOnAInQuoteCcy, StringFormat='{0:F2}'}" TextColor="Gray" FontSize="Small"/>
+                        <Label Text="Volume: " TextColor="Silver" FontSize="Small" Grid.Row="1" HorizontalOptions="Center"/>
+                        <StackLayout Spacing="0" Padding="10,0" Margin="0" Grid.Row="2" Orientation="Horizontal" BackgroundColor="Transparent" HorizontalOptions="Center" >
+                            <Label Text="{Binding Spread.Value.VolumeBuyOnBSellOnAInQuoteCcy, StringFormat='{0:F4}'}" TextColor="Gray" FontSize="Small"/>
                             <Label Text="{Binding SpreadModel.Value.QuoteCurrency}" TextColor="Silver" FontSize="Small" Padding="3,0,0,0"/>
                         </StackLayout>
                     </Grid>
@@ -120,13 +137,14 @@
                 </Grid>
 
 
-                <StackLayout Spacing="0" IsVisible="{Binding HasWarning.Value}" Padding="10,0" Grid.Column="0" Orientation="Vertical" BackgroundColor="Transparent" HorizontalOptions="Start" >
-                        <Image Source="warning2.png"  HeightRequest="30"/>
-                        <Label Text="{Binding Note.Value}" TextColor="Gray" FontSize="Default" HorizontalOptions="Center" />
-                </StackLayout>
+
 
             </StackLayout>
 
+            <StackLayout Spacing="0" IsVisible="{Binding HasWarning.Value}" Padding="10,0" Margin="0,20,0,0" Grid.Column="0" Orientation="Vertical" BackgroundColor="Transparent" HorizontalOptions="Start" >
+                <Image Source="warning2.png"  HeightRequest="30"/>
+                <Label Margin="0,10,0,0" Text="{Binding Note.Value}" TextColor="Gray" FontSize="Default" HorizontalOptions="Center" />
+            </StackLayout>
 
         </StackLayout>
     </ContentPage.Content>

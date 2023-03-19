@@ -5,12 +5,12 @@
              xmlns:viewModels="clr-namespace:CryptOverseeMobileApp.ViewModels;assembly=CryptOverseeMobileApp"
              x:Class="CryptOverseeMobileApp.Pages.HistoricalSpreadsDetails">
     <ContentPage.Content>
-        <StackLayout HorizontalOptions="Center" Padding="0" Margin="0" x:DataType="viewModels:HistoricalSpreadsDetailsViewModel"  >
+        <StackLayout HorizontalOptions="Center" Padding="0" Margin="10" x:DataType="viewModels:HistoricalSpreadsDetailsViewModel"  >
 
 
             <StackLayout >
 
-                <Label Text="{Binding Symbol.Value}" TextColor="Black" FontSize="Large" HorizontalOptions="Center" />
+                <Label Text="{Binding Symbol.Value}" TextColor="Black" FontSize="Large" FontAttributes="Bold" HorizontalOptions="Center" />
 
                 <StackLayout Orientation="Horizontal">
                     <Label Text="Last update" TextColor="Gray" FontSize="Default" />
@@ -55,7 +55,7 @@
                 </StackLayout>
 
 
-                <oxy:PlotView Model="{Binding DataPlot}" VerticalOptions="StartAndExpand" HorizontalOptions="Center" HeightRequest="150"/>
+                <!--<oxy:PlotView Model="{Binding DataPlot}" VerticalOptions="StartAndExpand" HorizontalOptions="Center" HeightRequest="150"/>-->
 
                 <Grid >
                     <Grid.ColumnDefinitions>
